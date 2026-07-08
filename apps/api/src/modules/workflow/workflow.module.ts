@@ -8,8 +8,15 @@ import { WorkflowRepository } from './repositories/workflow.repository';
 import { WorkflowExecutionRepository } from './repositories/workflow-execution.repository';
 import { WorkflowProcessor } from './processors/workflow.processor';
 
+import { EmailModule } from '../email/email.module';
+import { AiModule } from '../ai/ai.module';
+import { IntegrationsModule } from '../integrations/integrations.module';
+
 @Module({
   imports: [
+    EmailModule,
+    AiModule,
+    IntegrationsModule,
     BullModule.registerQueue({
       name: 'workflow-queue',
     }),

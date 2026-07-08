@@ -13,6 +13,14 @@ export const envValidationSchema = z.object({
   REFRESH_EXPIRES_IN: z.string().default('7d'),
   
   REDIS_URL: z.string().url().optional(),
+  
+  RESEND_API_KEY: z.string().startsWith('re_'),
+  OPENAI_API_KEY: z.string().startsWith('sk-'),
+  CLOUDINARY_API_KEY: z.string().min(10),
+  CLOUDINARY_API_SECRET: z.string().min(10),
+  
+  STRIPE_SECRET_KEY: z.string().startsWith('sk_'),
+  STRIPE_PUBLISHABLE_KEY: z.string().startsWith('pk_'),
 });
 
 export type EnvConfig = z.infer<typeof envValidationSchema>;

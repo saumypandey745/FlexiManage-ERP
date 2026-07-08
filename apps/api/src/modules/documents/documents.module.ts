@@ -4,7 +4,7 @@ import { DocumentController } from './controllers/document.controller';
 import { FolderController } from './controllers/folder.controller';
 import { DocumentService } from './services/document.service';
 import { DocumentRepository } from './repositories/document.repository';
-import { LocalStorageProvider } from './providers/local-storage.provider';
+import { CloudinaryProvider } from './providers/cloudinary.provider';
 
 @Module({
   imports: [
@@ -23,7 +23,7 @@ import { LocalStorageProvider } from './providers/local-storage.provider';
     DocumentRepository,
     {
       provide: 'StorageProvider',
-      useClass: LocalStorageProvider
+      useClass: CloudinaryProvider
     }
   ],
   exports: [DocumentService]

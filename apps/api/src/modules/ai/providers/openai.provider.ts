@@ -1,46 +1,93 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { IAiProvider, AiChatOptions, AiChatResult } from '../interfaces/ai-provider.interface';
+import OpenAI from 'openai';
 
 @Injectable()
 export class OpenAiProvider implements IAiProvider {
-  private readonly model = 'gpt-4o';
+  private readonly logger = new Logger(OpenAiProvider.name);
+  private openai: OpenAI;
+  private readonly defaultModel = 'gpt-4o';
+
+  constructor(private configService: ConfigService) {
+    const apiKey = this.configService.get<string>('OPENAI_API_KEY');
+    this.openai = new OpenAI({ apiKey });
+  }
 
   async chat(options: AiChatOptions): Promise<AiChatResult> {
-    // In a real implementation, we would use the OpenAI SDK:
-    // const response = await openai.chat.completions.create({...})
+    const model = (options as any).model || this.defaultModel;
     
-    return {
-      content: 'This is a mock response from OpenAI provider.',
-      usage: {
-        promptTokens: 10,
-        completionTokens: 20,
-        totalTokens: 30
-      },
-      model: this.model
-    };
+    try {
+      const response = await this.openai.chat.completions.create({
+        model,
+        messages: options.messages as OpenAI.ChatCompletionMessageParam[],
+        temperature: options.temperature ?? 0.7,
+        max_tokens: options.maxTokens,
+      });
+
+      return {
+        content: response.choices[0]?.message?.content || '',
+        usage: {
+          promptTokens: response.usage?.prompt_tokens || 0,
+          completionTokens: response.usage?.completion_tokens || 0,
+          totalTokens: response.usage?.total_tokens || 0
+        },
+        model: response.model
+      };
+    } catch (error) {
+      this.logger.error(`Failed to execute OpenAI chat: ${error.message}`);
+      throw error;
+    }
   }
 
   async streamChat(options: AiChatOptions, onChunk: (chunk: string) => void): Promise<AiChatResult> {
-    const chunks = ['This ', 'is ', 'a ', 'mock ', 'stream ', 'response.'];
+    const model = (options as any).model || this.defaultModel;
     
-    for (const chunk of chunks) {
-      onChunk(chunk);
-      await new Promise(resolve => setTimeout(resolve, 100)); // simulate latency
-    }
+    try {
+      const stream = await this.openai.chat.completions.create({
+        model,
+        messages: options.messages as OpenAI.ChatCompletionMessageParam[],
+        temperature: options.temperature ?? 0.7,
+        max_tokens: options.maxTokens,
+        stream: true,
+      });
 
-    return {
-      content: chunks.join(''),
-      usage: {
-        promptTokens: 10,
-        completionTokens: 20,
-        totalTokens: 30
-      },
-      model: this.model
-    };
+      let fullContent = '';
+      for await (const chunk of stream) {
+        const content = chunk.choices[0]?.delta?.content || '';
+        if (content) {
+          fullContent += content;
+          onChunk(content);
+        }
+      }
+
+      // In a real streaming scenario, we don't always get exact token usage unless requested specifically (stream_options).
+      // Assuming a basic character based estimation for now or zero.
+      return {
+        content: fullContent,
+        usage: {
+          promptTokens: 0,
+          completionTokens: 0,
+          totalTokens: 0
+        },
+        model
+      };
+    } catch (error) {
+      this.logger.error(`Failed to stream OpenAI chat: ${error.message}`);
+      throw error;
+    }
   }
 
   async embed(text: string): Promise<number[]> {
-    // Mock 1536 dimensional vector
-    return Array.from({ length: 1536 }, () => Math.random());
+    try {
+      const response = await this.openai.embeddings.create({
+        model: 'text-embedding-3-small',
+        input: text,
+      });
+      return response.data[0].embedding;
+    } catch (error) {
+      this.logger.error(`Failed to execute OpenAI embed: ${error.message}`);
+      throw error;
+    }
   }
 }
