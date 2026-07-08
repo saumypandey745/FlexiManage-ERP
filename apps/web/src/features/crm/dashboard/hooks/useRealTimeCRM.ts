@@ -10,8 +10,8 @@ export const useRealTimeCRM = () => {
   useEffect(() => {
     if (!socket || !isConnected) return;
 
-    const handleEvent = (eventKey: string, queryKeys: string[][], toastMessage?: (data: any) => string) => {
-      socket.on(eventKey, (data: any) => {
+    const handleEvent = (eventKey: string, queryKeys: string[][], toastMessage?: (data: unknown) => string) => {
+      socket.on(eventKey, (data: unknown) => {
         // Invalidate queries so TanStack auto-refetches the freshest data
         queryKeys.forEach((key) => {
           queryClient.invalidateQueries({ queryKey: key });
