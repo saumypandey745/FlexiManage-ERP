@@ -1,0 +1,3571 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "tracing", "postgresqlExtensions"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TenantStatus {
+  TRIAL
+  ACTIVE
+  SUSPENDED
+  ARCHIVED
+}
+
+enum UserStatus {
+  INVITED
+  ACTIVE
+  LOCKED
+  SUSPENDED
+  ARCHIVED
+}
+
+enum EmployeeStatus {
+  ONBOARDING
+  PROBATION
+  CONFIRMED
+  NOTICE_PERIOD
+  TERMINATED
+}
+
+enum LeaveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  HALF_DAY
+  LATE
+  ON_LEAVE
+}
+
+enum OpportunityStage {
+  PROSPECTING
+  QUALIFICATION
+  NEEDS_ANALYSIS
+  VALUE_PROPOSITION
+  DECISION_MAKERS
+  PERCEPTION_ANALYSIS
+  PROPOSAL
+  NEGOTIATION
+  CLOSED_WON
+  CLOSED_LOST
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  PROPOSAL_SENT
+  NEGOTIATION
+  CONVERTED
+  LOST
+  ARCHIVED
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PARTIAL
+  PAID
+  OVERDUE
+  VOID
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  REVIEW
+  BLOCKED
+  DONE
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum SubscriptionPlan {
+  FREE
+  STARTER
+  PRO
+  BUSINESS
+  ENTERPRISE
+}
+
+enum ActionType {
+  CREATE
+  UPDATE
+  DELETE
+}
+
+model Tenant {
+  id             String       @id @default(uuid()) @db.Uuid
+  name           String       @db.VarChar(255)
+  status         TenantStatus @default(TRIAL)
+  subscription   SubscriptionPlan @default(FREE)
+  timezone       String       @default("UTC")
+  currency       String       @default("USD")
+  
+  profile        OrganizationProfile?
+  users          User[]
+  roles          Role[]
+  employees      Employee[]
+  customers      Customer[]
+  leads          Lead[]
+  contacts       Contact[]
+  opportunities  Opportunity[]
+  products       Product[]
+  invoices       Invoice[]
+  auditLogs      AuditLog[]
+  branches       Branch[]
+  departments    Department[]
+  teams          Team[]
+
+  warehouses          Warehouse[]
+  productCategories   ProductCategory[]
+  suppliers           Supplier[]
+  stockItems          StockItem[]
+  stockMovements      StockMovement[]
+  purchaseOrders      PurchaseOrder[]
+
+  payments            Payment[]
+  expenseCategories   ExpenseCategory[]
+  expenseClaims       ExpenseClaim[]
+  ledgerAccounts      LedgerAccount[]
+  journalEntries      JournalEntry[]
+  taxRates            TaxRate[]
+
+  employeeProfiles    EmployeeProfile[]
+  attendances         Attendance[]
+  leaveTypes          LeaveType[]
+  leaveRequests       LeaveRequest[]
+  leaveBalances       LeaveBalance[]
+  holidays            Holiday[]
+  shifts              Shift[]
+  employeeShifts      EmployeeShift[]
+  payrolls            Payroll[]
+  candidates          RecruitmentCandidate[]
+  interviews          Interview[]
+  jobPositions        JobPosition[]
+
+  projects            Project[]
+  projectMembers      ProjectMember[]
+  milestones          Milestone[]
+  sprints             Sprint[]
+  tasks               Task[]
+  taskComments        TaskComment[]
+  taskAttachments     TaskAttachment[]
+  taskChecklists      TaskChecklist[]
+  taskLabels          TaskLabel[]
+  taskActivities      TaskActivity[]
+  timeEntries         TimeEntry[]
+  projectStatusHistory ProjectStatusHistory[]
+  taskStatusHistory   TaskStatusHistory[]
+  taskDependencies    TaskDependency[]
+  taskWatchers        TaskWatcher[]
+  taskReminders       TaskReminder[]
+  projectFiles        ProjectFile[]
+  projectTemplates    ProjectTemplate[]
+  taskNotifications   TaskNotification[]
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  @@map("tenants")
+  notifications    Notification[]
+  notificationPreferences NotificationPreference[]
+  notificationTemplates NotificationTemplate[]
+  emailLogs        EmailLog[]
+  smsLogs          SmsLog[]
+  pushNotifications PushNotification[]
+  inAppNotifications InAppNotification[]
+  webhooks         Webhook[]
+  chatRooms        ChatRoom[]
+  announcements    Announcement[]
+  notificationQueues NotificationQueue[]
+  communicationAudits CommunicationAudit[]
+
+
+  reports                 Report[]
+  reportTemplates         ReportTemplate[]
+  dashboards              Dashboard[]
+  dashboardWidgets        DashboardWidget[]
+  savedFilters            SavedFilter[]
+  scheduledReports        ScheduledReport[]
+  reportExecutions        ReportExecution[]
+  reportExports           ReportExport[]
+  kpiSnapshots            KpiSnapshot[]
+  metricDefinitions       MetricDefinition[]
+  analyticsEvents         AnalyticsEvent[]
+  reportShares            ReportShare[]
+  reportSubscriptions     ReportSubscription[]
+  reportAudits            ReportAudit[]
+
+
+  aiProviders             AiProvider[]
+  aiPromptTemplates       AiPromptTemplate[]
+  aiConversations         AiConversation[]
+  aiConversationMessages  AiConversationMessage[]
+  aiUsages                AiUsage[]
+  aiDocuments             AiDocument[]
+  aiEmbeddings            AiEmbedding[]
+  aiAudits                AiAudit[]
+
+
+  workflows               Workflow[]
+  workflowNodes           WorkflowNode[]
+  workflowEdges           WorkflowEdge[]
+  workflowExecutions      WorkflowExecution[]
+  workflowVariables       WorkflowVariable[]
+  workflowLogs            WorkflowLog[]
+
+
+  folders                 Folder[]
+  documents               Document[]
+  documentVersions        DocumentVersion[]
+  documentShares          DocumentShare[]
+  documentMetadata        DocumentMetadata[]
+  documentTags            DocumentTag[]
+  documentComments        DocumentComment[]
+  documentLocks           DocumentLock[]
+  documentAudits          DocumentAudit[]
+
+
+  integrations            Integration[]
+  hubWebhookEndpoints HubWebhookEndpoint[]
+
+
+
+
+  saasSubscription            SaaSSubscription?
+  saasSubscriptionUsages      SaaSSubscriptionUsage[]
+  saasSubscriptionInvoices    SaaSInvoice[]
+  saasPaymentTransactions     SaaSPaymentTransaction[]
+  saasBillingAudits           SaaSBillingAudit[]
+
+}
+
+model OrganizationProfile {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @unique @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  legalName      String       @db.VarChar(255)
+  businessEmail  String?      @db.VarChar(255)
+  phone          String?      @db.VarChar(50)
+  gstNumber      String?      @db.VarChar(50)
+  panNumber      String?      @db.VarChar(50)
+  country        String       @default("US")
+  address        String?      @db.Text
+  logoUrl        String?      @db.VarChar(255)
+  brandingColor  String?      @db.VarChar(50)
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  version        Int          @default(1)
+
+  @@map("organization_profiles")
+}
+
+model Branch {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  code           String       @db.VarChar(50)
+  name           String       @db.VarChar(100)
+  isHeadOffice   Boolean      @default(false)
+  address        String?      @db.Text
+  phone          String?      @db.VarChar(50)
+  email          String?      @db.VarChar(255)
+  
+  departments    Department[]
+  
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+  version        Int          @default(1)
+
+  @@unique([tenantId, code])
+  @@index([tenantId])
+  @@map("branches")
+}
+
+model Department {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  branchId       String?      @db.Uuid
+  branch         Branch?      @relation(fields: [branchId], references: [id], onDelete: Restrict)
+  code           String       @db.VarChar(50)
+  name           String       @db.VarChar(100)
+  description    String?      @db.Text
+  
+  teams          Team[]
+  employees      Employee[]
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+  version        Int          @default(1)
+
+  @@unique([tenantId, code])
+  @@index([tenantId])
+  @@map("departments")
+}
+
+model Team {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  departmentId   String?      @db.Uuid
+  department     Department?  @relation(fields: [departmentId], references: [id], onDelete: Restrict)
+  code           String       @db.VarChar(50)
+  name           String       @db.VarChar(100)
+  description    String?      @db.Text
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+  version        Int          @default(1)
+
+  @@unique([tenantId, code])
+  @@index([tenantId])
+  @@map("teams")
+}
+
+model User {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  email          String       @db.VarChar(255)
+  passwordHash   String       @db.VarChar(255)
+  status         UserStatus   @default(INVITED)
+  
+  roles          UserRole[]
+  employee       Employee?
+  profile        UserProfile?
+  preference     UserPreference?
+  
+  assignedLeads         Lead[]        @relation("LeadAssignee")
+  assignedCustomers     Customer[]    @relation("CustomerAssignee")
+  assignedOpportunities Opportunity[] @relation("OpportunityAssignee")
+
+  managedWarehouses     Warehouse[]       @relation("WarehouseManager")
+  performedMovements    StockMovement[]   @relation("MovementPerformer")
+  createdPOs            PurchaseOrder[]   @relation("POCreator")
+
+  expenseClaims       ExpenseClaim[]    @relation("UserExpenses")
+
+  projectMemberships  ProjectMember[]
+  assignedTasks       Task[]            @relation("TaskAssignee")
+  reportedTasks       Task[]            @relation("TaskReporter")
+  taskComments        TaskComment[]
+  uploadedFiles       TaskAttachment[]
+  taskActivities      TaskActivity[]
+  timeEntries         TimeEntry[]
+  projectStatusChanges ProjectStatusHistory[]
+  taskStatusChanges   TaskStatusHistory[]
+  watchedTasks        TaskWatcher[]
+  taskReminders       TaskReminder[]
+  uploadedProjectFiles ProjectFile[]
+  taskNotifications   TaskNotification[]
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  @@unique([tenantId, email])
+  @@index([tenantId])
+  @@map("users")
+  sentNotifications Notification[] @relation("NotificationSender")
+  receivedNotifications NotificationRecipient[] @relation("NotificationReceiver")
+  notificationPreferences NotificationPreference[] @relation("NotificationPrefs")
+  pushNotifications PushNotification[]
+  inAppNotifications InAppNotification[]
+  chatParticipants ChatParticipant[]
+  sentMessages     ChatMessage[] @relation("MessageSender")
+  messageReactions MessageReaction[]
+  publishedAnnouncements Announcement[] @relation("AnnouncementPublisher")
+  receivedAnnouncements AnnouncementRecipient[] @relation("AnnouncementReceiver")
+  commAudits       CommunicationAudit[] @relation("CommAuditUser")
+
+
+  createdReports          Report[]
+
+
+  aiConversations         AiConversation[]
+  aiUsages                AiUsage[]
+  aiAudits                AiAudit[]
+
+
+  documentComments        DocumentComment[]
+  documentLocks           DocumentLock[]
+
+}
+
+model UserProfile {
+  id             String       @id @default(uuid()) @db.Uuid
+  userId         String       @unique @db.Uuid
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firstName      String?      @db.VarChar(100)
+  lastName       String?      @db.VarChar(100)
+  phone          String?      @db.VarChar(50)
+  avatarUrl      String?      @db.VarChar(255)
+  bio            String?      @db.Text
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@map("user_profiles")
+}
+
+model UserPreference {
+  id             String       @id @default(uuid()) @db.Uuid
+  userId         String       @unique @db.Uuid
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  timezone       String       @default("UTC")
+  language       String       @default("en")
+  theme          String       @default("system")
+  notifications  Boolean      @default(true)
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@map("user_preferences")
+}
+
+model Role {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String?      @db.Uuid
+  tenant         Tenant?      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  name           String       @db.VarChar(100)
+  
+  users          UserRole[]
+  permissions    RolePermission[]
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@unique([tenantId, name])
+  @@index([tenantId])
+  @@map("roles")
+}
+
+model Permission {
+  id             String       @id @default(uuid()) @db.Uuid
+  action         String       @db.VarChar(100)
+  roles          RolePermission[]
+
+  @@unique([action])
+  @@map("permissions")
+}
+
+model UserRole {
+  userId         String       @db.Uuid
+  roleId         String       @db.Uuid
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role           Role         @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@map("user_roles")
+}
+
+model RolePermission {
+  roleId         String       @db.Uuid
+  permissionId   String       @db.Uuid
+  role           Role         @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission     Permission   @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+// ==========================================
+// HRMS MODULE
+// ==========================================
+
+enum PayrollStatus {
+  DRAFT
+  PROCESSING
+  PAID
+  FAILED
+}
+
+enum CandidateStatus {
+  APPLIED
+  SCREENING
+  INTERVIEWING
+  OFFERED
+  HIRED
+  REJECTED
+}
+
+enum InterviewStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum ShiftType {
+  MORNING
+  EVENING
+  NIGHT
+  CUSTOM
+}
+
+model Employee {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  userId         String?      @unique @db.Uuid
+  user           User?        @relation(fields: [userId], references: [id], onDelete: Restrict)
+  employeeCode   String       @db.VarChar(50)
+  firstName      String       @db.VarChar(100)
+  lastName       String       @db.VarChar(100)
+  status         EmployeeStatus @default(ONBOARDING)
+  managerId      String?      @db.Uuid
+  manager        Employee?    @relation("ManagerToEmployee", fields: [managerId], references: [id], onDelete: SetNull)
+  subordinates   Employee[]   @relation("ManagerToEmployee")
+
+  departmentId   String?      @db.Uuid
+  department     Department?  @relation(fields: [departmentId], references: [id])
+
+  profile        EmployeeProfile?
+  attendances    Attendance[]
+  leaveRequests  LeaveRequest[]
+  leaveBalances  LeaveBalance[]
+  shifts         EmployeeShift[]
+  payrolls       Payroll[]
+  
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+  version        Int          @default(1)
+
+  @@unique([tenantId, employeeCode])
+  @@index([tenantId])
+  @@map("hrm_employees")
+}
+
+model EmployeeProfile {
+  id             String       @id @default(uuid()) @db.Uuid
+  employeeId     String       @unique @db.Uuid
+  employee       Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  phone          String?      @db.VarChar(50)
+  address        String?      @db.Text
+  dateOfBirth    DateTime?    @db.Date
+  joiningDate    DateTime?    @db.Date
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  @@map("hrm_employee_profiles")
+}
+
+model Attendance {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  employeeId     String       @db.Uuid
+  employee       Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  
+  date           DateTime     @db.Date
+  clockIn        DateTime
+  clockOut       DateTime?
+  status         AttendanceStatus @default(PRESENT)
+  isLate         Boolean      @default(false)
+  
+  breaks         AttendanceBreak[]
+
+  @@unique([tenantId, employeeId, date])
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  @@map("hrm_attendances")
+}
+
+model AttendanceBreak {
+  id             String       @id @default(uuid()) @db.Uuid
+  attendanceId   String       @db.Uuid
+  attendance     Attendance   @relation(fields: [attendanceId], references: [id], onDelete: Cascade)
+  
+  startTime      DateTime
+  endTime        DateTime?
+  type           String       @db.VarChar(50)
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  @@map("hrm_attendance_breaks")
+}
+
+model LeaveType {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  name           String       @db.VarChar(50)
+  defaultDays    Int
+  isPaid         Boolean      @default(true)
+
+  leaveBalances  LeaveBalance[]
+  leaveRequests  LeaveRequest[]
+
+  @@unique([tenantId, name])
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  @@map("hrm_leave_types")
+}
+
+model LeaveBalance {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  employeeId     String       @db.Uuid
+  employee       Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  
+  leaveTypeId    String       @db.Uuid
+  leaveType      LeaveType    @relation(fields: [leaveTypeId], references: [id])
+  
+  year           Int
+  totalDays      Decimal      @db.Decimal(5, 2)
+  usedDays       Decimal      @db.Decimal(5, 2) @default(0)
+
+  @@unique([tenantId, employeeId, leaveTypeId, year])
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  @@map("hrm_leave_balances")
+}
+
+model LeaveRequest {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  employeeId     String       @db.Uuid
+  employee       Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  
+  leaveTypeId    String       @db.Uuid
+  leaveType      LeaveType    @relation(fields: [leaveTypeId], references: [id])
+  
+  startDate      DateTime     @db.Date
+  endDate        DateTime     @db.Date
+  status         LeaveStatus  @default(PENDING)
+  reason         String?      @db.Text
+  
+  approvedById   String?      @db.Uuid
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  @@map("hrm_leave_requests")
+}
+
+model Holiday {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  name           String       @db.VarChar(100)
+  date           DateTime     @db.Date
+  isRecurring    Boolean      @default(false)
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  @@map("hrm_holidays")
+}
+
+model Shift {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  name           String       @db.VarChar(50)
+  type           ShiftType    @default(MORNING)
+  startTime      String       @db.VarChar(10) // "09:00"
+  endTime        String       @db.VarChar(10) // "17:00"
+  gracePeriod    Int          @default(15) // minutes
+
+  employeeShifts EmployeeShift[]
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  @@map("hrm_shifts")
+}
+
+model EmployeeShift {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  employeeId     String       @db.Uuid
+  employee       Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  
+  shiftId        String       @db.Uuid
+  shift          Shift        @relation(fields: [shiftId], references: [id])
+  
+  startDate      DateTime     @db.Date
+  endDate        DateTime?    @db.Date
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  @@map("hrm_employee_shifts")
+}
+
+model Payroll {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  employeeId     String       @db.Uuid
+  employee       Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  
+  month          Int
+  year           Int
+  status         PayrollStatus @default(DRAFT)
+  
+  basicSalary    Decimal      @db.Decimal(12, 2)
+  netSalary      Decimal      @db.Decimal(12, 2)
+  
+  items          PayrollItem[]
+
+  @@unique([tenantId, employeeId, month, year])
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  @@map("hrm_payrolls")
+}
+
+model PayrollItem {
+  id             String       @id @default(uuid()) @db.Uuid
+  payrollId      String       @db.Uuid
+  payroll        Payroll      @relation(fields: [payrollId], references: [id], onDelete: Cascade)
+  
+  name           String       @db.VarChar(100)
+  amount         Decimal      @db.Decimal(12, 2)
+  type           String       @db.VarChar(20) // "EARNING", "DEDUCTION"
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  @@map("hrm_payroll_items")
+}
+
+model RecruitmentCandidate {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  firstName      String       @db.VarChar(100)
+  lastName       String       @db.VarChar(100)
+  email          String       @db.VarChar(255)
+  phone          String?      @db.VarChar(50)
+  status         CandidateStatus @default(APPLIED)
+  
+  positionId     String       @db.Uuid
+  position       JobPosition  @relation(fields: [positionId], references: [id])
+  
+  interviews     Interview[]
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  @@map("hrm_recruitment_candidates")
+}
+
+model JobPosition {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  title          String       @db.VarChar(100)
+  description    String?      @db.Text
+  isOpen         Boolean      @default(true)
+  
+  candidates     RecruitmentCandidate[]
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  @@map("hrm_job_positions")
+}
+
+model Interview {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  candidateId    String       @db.Uuid
+  candidate      RecruitmentCandidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  
+  interviewerId  String       @db.Uuid // Usually an Employee ID
+  scheduledAt    DateTime
+  status         InterviewStatus @default(SCHEDULED)
+  feedback       String?      @db.Text
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  @@map("hrm_interviews")
+}
+
+model Customer {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  name           String       @db.VarChar(255)
+  industry       String?      @db.VarChar(100)
+  email          String?      @db.VarChar(255)
+  phone          String?      @db.VarChar(50)
+  website        String?      @db.VarChar(255)
+  billingAddress String?      @db.Text
+  shippingAddress String?     @db.Text
+
+  assignedToId   String?      @db.Uuid
+  assignedTo     User?        @relation("CustomerAssignee", fields: [assignedToId], references: [id])
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  invoices       Invoice[]
+  contacts       Contact[]
+  opportunities  Opportunity[]
+  notes          CustomerNote[]
+  projects       Project[]
+
+  @@index([tenantId])
+  @@map("customers")
+}
+
+model Lead {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  firstName      String       @db.VarChar(100)
+  lastName       String       @db.VarChar(100)
+  company        String?      @db.VarChar(255)
+  email          String       @db.VarChar(255)
+  phone          String?      @db.VarChar(50)
+  
+  status         LeadStatus   @default(NEW)
+  source         String?      @db.VarChar(100)
+  score          Int          @default(0)
+  
+  assignedToId   String?      @db.Uuid
+  assignedTo     User?        @relation("LeadAssignee", fields: [assignedToId], references: [id])
+  
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  activities     LeadActivity[]
+  notes          LeadNote[]
+
+  @@index([tenantId])
+  @@map("crm_leads")
+}
+
+model Contact {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  customerId     String       @db.Uuid
+  customer       Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  
+  firstName      String       @db.VarChar(100)
+  lastName       String       @db.VarChar(100)
+  jobTitle       String?      @db.VarChar(100)
+  email          String       @db.VarChar(255)
+  phone          String?      @db.VarChar(50)
+  isPrimary      Boolean      @default(false)
+  
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  @@index([tenantId])
+  @@index([customerId])
+  @@map("crm_contacts")
+}
+
+model Opportunity {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  customerId     String       @db.Uuid
+  customer       Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  name           String       @db.VarChar(255)
+  amount         Decimal      @db.Decimal(12, 2)
+  probability    Int          @default(0)
+  stage          OpportunityStage @default(PROSPECTING)
+  expectedClose  DateTime?
+  
+  assignedToId   String?      @db.Uuid
+  assignedTo     User?        @relation("OpportunityAssignee", fields: [assignedToId], references: [id])
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  history        OpportunityHistory[]
+
+  @@index([tenantId])
+  @@index([customerId])
+  @@map("crm_opportunities")
+}
+
+model LeadActivity {
+  id             String       @id @default(uuid()) @db.Uuid
+  leadId         String       @db.Uuid
+  lead           Lead         @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  
+  type           String       @db.VarChar(50)
+  description    String       @db.Text
+  date           DateTime     @default(now())
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([leadId])
+  @@map("crm_lead_activities")
+}
+
+model LeadNote {
+  id             String       @id @default(uuid()) @db.Uuid
+  leadId         String       @db.Uuid
+  lead           Lead         @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  
+  content        String       @db.Text
+  
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([leadId])
+  @@map("crm_lead_notes")
+}
+
+model CustomerNote {
+  id             String       @id @default(uuid()) @db.Uuid
+  customerId     String       @db.Uuid
+  customer       Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  
+  content        String       @db.Text
+  
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([customerId])
+  @@map("crm_customer_notes")
+}
+
+model OpportunityHistory {
+  id             String       @id @default(uuid()) @db.Uuid
+  opportunityId  String       @db.Uuid
+  opportunity    Opportunity  @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  
+  oldStage       OpportunityStage?
+  newStage       OpportunityStage
+  changedAt      DateTime     @default(now())
+  changedById    String       @db.Uuid
+  
+  @@index([opportunityId])
+  @@map("crm_opportunity_history")
+}
+
+// ==========================================
+// FINANCE & ACCOUNTING MODULE
+// ==========================================
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum ExpenseStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+  REIMBURSED
+}
+
+enum LedgerAccountType {
+  ASSET
+  LIABILITY
+  EQUITY
+  REVENUE
+  EXPENSE
+}
+
+model Invoice {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  customerId     String       @db.Uuid
+  customer       Customer     @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  
+  invoiceNumber  String       @db.VarChar(50)
+  status         InvoiceStatus @default(DRAFT)
+  issueDate      DateTime     @db.Date
+  dueDate        DateTime     @db.Date
+  
+  subTotal       Decimal      @db.Decimal(12, 2) @default(0)
+  taxAmount      Decimal      @db.Decimal(12, 2) @default(0)
+  totalAmount    Decimal      @db.Decimal(12, 2)
+  amountPaid     Decimal      @db.Decimal(12, 2) @default(0)
+  
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  lines          InvoiceLine[]
+  payments       Payment[]
+
+  @@unique([tenantId, invoiceNumber])
+  @@index([tenantId])
+  @@map("fin_invoices")
+}
+
+model InvoiceLine {
+  id             String       @id @default(uuid()) @db.Uuid
+  invoiceId      String       @db.Uuid
+  invoice        Invoice      @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  
+  description    String       @db.Text
+  quantity       Int
+  unitPrice      Decimal      @db.Decimal(12, 2)
+  taxRateId      String?      @db.Uuid
+  taxRate        TaxRate?     @relation(fields: [taxRateId], references: [id])
+  totalAmount    Decimal      @db.Decimal(12, 2)
+
+  @@map("fin_invoice_lines")
+}
+
+model Payment {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  invoiceId      String?      @db.Uuid
+  invoice        Invoice?     @relation(fields: [invoiceId], references: [id])
+
+  amount         Decimal      @db.Decimal(12, 2)
+  paymentDate    DateTime     @db.Date
+  method         String       @db.VarChar(50)
+  reference      String?      @db.VarChar(100)
+  status         PaymentStatus @default(COMPLETED)
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([tenantId])
+  @@map("fin_payments")
+}
+
+model ExpenseCategory {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  name           String       @db.VarChar(100)
+  description    String?      @db.Text
+  
+  expenses       ExpenseClaim[]
+
+  @@unique([tenantId, name])
+  @@map("fin_expense_categories")
+}
+
+model ExpenseClaim {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  userId         String       @db.Uuid
+  user           User         @relation("UserExpenses", fields: [userId], references: [id])
+  
+  categoryId     String       @db.Uuid
+  category       ExpenseCategory @relation(fields: [categoryId], references: [id])
+  
+  amount         Decimal      @db.Decimal(12, 2)
+  date           DateTime     @db.Date
+  description    String       @db.Text
+  status         ExpenseStatus @default(SUBMITTED)
+  receiptUrl     String?      @db.Text
+  
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([tenantId])
+  @@map("fin_expense_claims")
+}
+
+model LedgerAccount {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  code           String       @db.VarChar(50)
+  name           String       @db.VarChar(100)
+  type           LedgerAccountType
+  
+  journalLines   JournalLine[]
+
+  @@unique([tenantId, code])
+  @@map("fin_ledger_accounts")
+}
+
+model JournalEntry {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  entryDate      DateTime     @db.Date
+  reference      String       @db.VarChar(100)
+  description    String       @db.Text
+  
+  createdAt      DateTime     @default(now())
+  
+  lines          JournalLine[]
+
+  @@index([tenantId])
+  @@map("fin_journal_entries")
+}
+
+model JournalLine {
+  id             String       @id @default(uuid()) @db.Uuid
+  entryId        String       @db.Uuid
+  entry          JournalEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  
+  accountId      String       @db.Uuid
+  account        LedgerAccount @relation(fields: [accountId], references: [id])
+  
+  debit          Decimal      @db.Decimal(12, 2) @default(0)
+  credit         Decimal      @db.Decimal(12, 2) @default(0)
+
+  @@map("fin_journal_lines")
+}
+
+model TaxRate {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  name           String       @db.VarChar(50)
+  rate           Decimal      @db.Decimal(5, 2) // percentage
+  
+  invoiceLines   InvoiceLine[]
+
+  @@unique([tenantId, name])
+  @@map("fin_tax_rates")
+}
+
+model Product {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  categoryId     String?      @db.Uuid
+  category       ProductCategory? @relation(fields: [categoryId], references: [id])
+
+  sku            String       @db.VarChar(100)
+  name           String       @db.VarChar(255)
+  description    String?      @db.Text
+  brand          String?      @db.VarChar(100)
+  uom            String       @default("PCS") @db.VarChar(20)
+  barcode        String?      @db.VarChar(100)
+  price          Decimal      @db.Decimal(12, 2)
+  
+  reorderLevel   Int          @default(0)
+  safetyStock    Int          @default(0)
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  variants       ProductVariant[]
+  stockItems     StockItem[]
+  poLines        PurchaseOrderLine[]
+  movements      StockMovement[]
+
+  @@unique([tenantId, sku])
+  @@index([tenantId])
+  @@map("inv_products")
+}
+
+model AuditLog {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  userId         String?      @db.Uuid
+  action         ActionType
+  entityName     String       @db.VarChar(100)
+  entityId       String       @db.Uuid
+  oldValues      Json?
+  newValues      Json?
+  createdAt      DateTime     @default(now())
+  @@index([tenantId, entityName])
+  @@map("audit_logs")
+}
+
+
+// ==========================================
+// INVENTORY & WAREHOUSE MODULE
+// ==========================================
+
+enum WarehouseStatus {
+  ACTIVE
+  INACTIVE
+  MAINTENANCE
+  CLOSED
+}
+
+enum POStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  PARTIALLY_RECEIVED
+  RECEIVED
+  CANCELLED
+  CLOSED
+}
+
+enum MovementType {
+  IN
+  OUT
+  TRANSFER
+  ADJUSTMENT
+  RETURN
+}
+
+model Warehouse {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  code           String       @db.VarChar(50)
+  name           String       @db.VarChar(255)
+  location       String?      @db.Text
+  capacity       Int          @default(0)
+  status         WarehouseStatus @default(ACTIVE)
+
+  managerId      String?      @db.Uuid
+  manager        User?        @relation("WarehouseManager", fields: [managerId], references: [id])
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  stockItems     StockItem[]
+  movementsFrom  StockMovement[] @relation("MovementFromWarehouse")
+  movementsTo    StockMovement[] @relation("MovementToWarehouse")
+
+  @@unique([tenantId, code])
+  @@index([tenantId])
+  @@map("inv_warehouses")
+}
+
+model ProductCategory {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  name           String       @db.VarChar(100)
+  description    String?      @db.Text
+  parentId       String?      @db.Uuid
+  parent         ProductCategory?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children       ProductCategory[] @relation("CategoryHierarchy")
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  products       Product[]
+
+  @@unique([tenantId, name])
+  @@index([tenantId])
+  @@map("inv_product_categories")
+}
+
+model ProductVariant {
+  id             String       @id @default(uuid()) @db.Uuid
+  productId      String       @db.Uuid
+  product        Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  sku            String       @db.VarChar(100)
+  name           String       @db.VarChar(255)
+  options        Json?        
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  @@unique([productId, sku])
+  @@map("inv_product_variants")
+}
+
+model Supplier {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  name           String       @db.VarChar(255)
+  code           String       @db.VarChar(50)
+  email          String?      @db.VarChar(255)
+  phone          String?      @db.VarChar(50)
+  address        String?      @db.Text
+  rating         Int          @default(0)
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  purchaseOrders PurchaseOrder[]
+
+  @@unique([tenantId, code])
+  @@index([tenantId])
+  @@map("inv_suppliers")
+}
+
+model StockItem {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  warehouseId    String       @db.Uuid
+  warehouse      Warehouse    @relation(fields: [warehouseId], references: [id], onDelete: Restrict)
+
+  productId      String       @db.Uuid
+  product        Product      @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  quantity       Int          @default(0)
+  reserved       Int          @default(0)
+  batchNumber    String?      @db.VarChar(100)
+  expiryDate     DateTime?    @db.Date
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@unique([warehouseId, productId, batchNumber])
+  @@index([tenantId])
+  @@map("inv_stock_items")
+}
+
+model StockMovement {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  type           MovementType
+  productId      String       @db.Uuid
+  product        Product      @relation(fields: [productId], references: [id])
+
+  fromWarehouseId String?     @db.Uuid
+  fromWarehouse  Warehouse?   @relation("MovementFromWarehouse", fields: [fromWarehouseId], references: [id])
+
+  toWarehouseId  String?      @db.Uuid
+  toWarehouse    Warehouse?   @relation("MovementToWarehouse", fields: [toWarehouseId], references: [id])
+
+  quantity       Int
+  reference      String?      @db.VarChar(100)
+  notes          String?      @db.Text
+
+  performedById  String       @db.Uuid
+  performedBy    User         @relation("MovementPerformer", fields: [performedById], references: [id])
+
+  createdAt      DateTime     @default(now())
+
+  @@index([tenantId])
+  @@map("inv_stock_movements")
+}
+
+model PurchaseOrder {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  poNumber       String       @db.VarChar(50)
+  supplierId     String       @db.Uuid
+  supplier       Supplier     @relation(fields: [supplierId], references: [id])
+
+  status         POStatus     @default(DRAFT)
+  totalAmount    Decimal      @db.Decimal(12, 2)
+  expectedDate   DateTime?    @db.Date
+
+  createdById    String       @db.Uuid
+  createdBy      User         @relation("POCreator", fields: [createdById], references: [id])
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  lines          PurchaseOrderLine[]
+
+  @@unique([tenantId, poNumber])
+  @@index([tenantId])
+  @@map("inv_purchase_orders")
+}
+
+model PurchaseOrderLine {
+  id             String       @id @default(uuid()) @db.Uuid
+  poId           String       @db.Uuid
+  po             PurchaseOrder @relation(fields: [poId], references: [id], onDelete: Cascade)
+
+  productId      String       @db.Uuid
+  product        Product      @relation(fields: [productId], references: [id])
+
+  quantity       Int
+  received       Int          @default(0)
+  unitPrice      Decimal      @db.Decimal(12, 2)
+
+  @@map("inv_purchase_order_lines")
+}
+
+// ==========================================
+// PROJECT & TASK MANAGEMENT MODULE
+// ==========================================
+
+enum ProjectStatus {
+  PLANNING
+  ACTIVE
+  ON_HOLD
+  COMPLETED
+  CANCELLED
+}
+
+enum ProjectPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+
+
+enum TaskType {
+  BUG
+  FEATURE
+  EPIC
+  STORY
+  TASK
+}
+
+enum DependencyType {
+  BLOCKS
+  IS_BLOCKED_BY
+  RELATES_TO
+  DUPLICATES
+}
+
+enum SprintStatus {
+  PLANNED
+  ACTIVE
+  CLOSED
+}
+
+enum ReminderType {
+  EMAIL
+  IN_APP
+  PUSH
+}
+
+enum TimeEntryStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+}
+
+model Project {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  name           String       @db.VarChar(255)
+  code           String       @db.VarChar(50)
+  description    String?      @db.Text
+  status         ProjectStatus @default(PLANNING)
+  priority       ProjectPriority @default(MEDIUM)
+  
+  startDate      DateTime?    @db.Date
+  endDate        DateTime?    @db.Date
+  budget         Decimal?     @db.Decimal(15, 2)
+  progress       Int          @default(0) // 0-100 percentage
+  
+  customerId     String?      @db.Uuid
+  customer       Customer?    @relation(fields: [customerId], references: [id])
+  
+  members        ProjectMember[]
+  tasks          Task[]
+  milestones     Milestone[]
+  sprints        Sprint[]
+  files          ProjectFile[]
+  statusHistory  ProjectStatusHistory[]
+  
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+  version        Int          @default(1)
+
+  @@unique([tenantId, code])
+  @@index([tenantId])
+  @@map("pm_projects")
+}
+
+model ProjectMember {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  projectId      String       @db.Uuid
+  project        Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  userId         String       @db.Uuid
+  user           User         @relation(fields: [userId], references: [id])
+  
+  role           String       @default("MEMBER") @db.VarChar(50)
+  billableRate   Decimal?     @db.Decimal(10, 2)
+  
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@unique([projectId, userId])
+  @@index([tenantId])
+  @@map("pm_project_members")
+}
+
+model Milestone {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  projectId      String       @db.Uuid
+  project        Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  name           String       @db.VarChar(255)
+  description    String?      @db.Text
+  dueDate        DateTime     @db.Date
+  isCompleted    Boolean      @default(false)
+  
+  tasks          Task[]
+  
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([tenantId])
+  @@index([projectId])
+  @@map("pm_milestones")
+}
+
+model Sprint {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  projectId      String       @db.Uuid
+  project        Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  name           String       @db.VarChar(100)
+  goal           String?      @db.Text
+  startDate      DateTime     @db.Date
+  endDate        DateTime     @db.Date
+  status         SprintStatus @default(PLANNED)
+  
+  tasks          Task[]
+  
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([tenantId])
+  @@index([projectId])
+  @@map("pm_sprints")
+}
+
+model Task {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  projectId      String       @db.Uuid
+  project        Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  code           String       @db.VarChar(50)
+  title          String       @db.VarChar(255)
+  description    String?      @db.Text
+  
+  status         TaskStatus   @default(TODO)
+  priority       TaskPriority @default(MEDIUM)
+  type           TaskType     @default(TASK)
+  
+  assigneeId     String?      @db.Uuid
+  assignee       User?        @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  reporterId     String       @db.Uuid
+  reporter       User         @relation("TaskReporter", fields: [reporterId], references: [id])
+  
+  milestoneId    String?      @db.Uuid
+  milestone      Milestone?   @relation(fields: [milestoneId], references: [id])
+  
+  sprintId       String?      @db.Uuid
+  sprint         Sprint?      @relation(fields: [sprintId], references: [id])
+  
+  parentTaskId   String?      @db.Uuid
+  parentTask     Task?        @relation("SubTasks", fields: [parentTaskId], references: [id])
+  subTasks       Task[]       @relation("SubTasks")
+  
+  startDate      DateTime?    @db.Date
+  dueDate        DateTime?    @db.Date
+  completedAt    DateTime?
+  
+  estimatedHours Decimal?     @db.Decimal(10, 2)
+  actualHours    Decimal?     @db.Decimal(10, 2)
+  
+  comments       TaskComment[]
+  attachments    TaskAttachment[]
+  checklists     TaskChecklist[]
+  labels         TaskLabel[]
+  activities     TaskActivity[]
+  timeEntries    TimeEntry[]
+  statusHistory  TaskStatusHistory[]
+  watchers       TaskWatcher[]
+  reminders      TaskReminder[]
+  
+  dependencies     TaskDependency[] @relation("TaskDependsOn")
+  dependentTasks   TaskDependency[] @relation("TaskDependent")
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+  version        Int          @default(1)
+
+  @@unique([tenantId, projectId, code])
+  @@index([tenantId])
+  @@index([projectId])
+  @@index([assigneeId])
+  @@map("pm_tasks")
+}
+
+model TaskComment {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  taskId         String       @db.Uuid
+  task           Task         @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  
+  userId         String       @db.Uuid
+  user           User         @relation(fields: [userId], references: [id])
+  
+  content        String       @db.Text
+  
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([tenantId])
+  @@map("pm_task_comments")
+}
+
+model TaskAttachment {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  taskId         String       @db.Uuid
+  task           Task         @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  
+  fileName       String       @db.VarChar(255)
+  fileUrl        String       @db.VarChar(512)
+  fileSize       Int
+  contentType    String       @db.VarChar(100)
+  
+  uploadedById   String       @db.Uuid
+  uploadedBy     User         @relation(fields: [uploadedById], references: [id])
+  
+  createdAt      DateTime     @default(now())
+
+  @@index([tenantId])
+  @@map("pm_task_attachments")
+}
+
+model TaskChecklist {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  taskId         String       @db.Uuid
+  task           Task         @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  
+  name           String       @db.VarChar(255)
+  items          ChecklistItem[]
+  
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([tenantId])
+  @@map("pm_task_checklists")
+}
+
+model ChecklistItem {
+  id             String       @id @default(uuid()) @db.Uuid
+  checklistId    String       @db.Uuid
+  checklist      TaskChecklist @relation(fields: [checklistId], references: [id], onDelete: Cascade)
+  
+  content        String       @db.VarChar(255)
+  isCompleted    Boolean      @default(false)
+  position       Int          @default(0)
+  
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@map("pm_checklist_items")
+}
+
+model TaskLabel {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  taskId         String       @db.Uuid
+  task           Task         @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  
+  name           String       @db.VarChar(50)
+  color          String?      @db.VarChar(20)
+  
+  createdAt      DateTime     @default(now())
+  
+  @@unique([taskId, name])
+  @@index([tenantId])
+  @@map("pm_task_labels")
+}
+
+model TaskActivity {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  taskId         String       @db.Uuid
+  task           Task         @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  
+  userId         String       @db.Uuid
+  user           User         @relation(fields: [userId], references: [id])
+  
+  action         String       @db.VarChar(100)
+  details        String?      @db.Text
+  
+  createdAt      DateTime     @default(now())
+
+  @@index([tenantId])
+  @@map("pm_task_activities")
+}
+
+model TimeEntry {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  taskId         String?      @db.Uuid
+  task           Task?        @relation(fields: [taskId], references: [id], onDelete: SetNull)
+  
+  userId         String       @db.Uuid
+  user           User         @relation(fields: [userId], references: [id])
+  
+  date           DateTime     @db.Date
+  hours          Decimal      @db.Decimal(5, 2)
+  description    String?      @db.Text
+  status         TimeEntryStatus @default(SUBMITTED)
+  
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([tenantId])
+  @@index([userId])
+  @@map("pm_time_entries")
+}
+
+model ProjectStatusHistory {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  projectId      String       @db.Uuid
+  project        Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  oldStatus      ProjectStatus?
+  newStatus      ProjectStatus
+  changedById    String       @db.Uuid
+  changedBy      User         @relation(fields: [changedById], references: [id])
+  
+  createdAt      DateTime     @default(now())
+
+  @@index([tenantId])
+  @@map("pm_project_status_history")
+}
+
+model TaskStatusHistory {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  taskId         String       @db.Uuid
+  task           Task         @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  
+  oldStatus      TaskStatus?
+  newStatus      TaskStatus
+  changedById    String       @db.Uuid
+  changedBy      User         @relation(fields: [changedById], references: [id])
+  
+  createdAt      DateTime     @default(now())
+
+  @@index([tenantId])
+  @@map("pm_task_status_history")
+}
+
+model TaskDependency {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  taskId         String       @db.Uuid
+  task           Task         @relation("TaskDependsOn", fields: [taskId], references: [id], onDelete: Cascade)
+  
+  dependsOnId    String       @db.Uuid
+  dependsOn      Task         @relation("TaskDependent", fields: [dependsOnId], references: [id], onDelete: Cascade)
+  
+  type           DependencyType @default(BLOCKS)
+  
+  createdAt      DateTime     @default(now())
+
+  @@unique([taskId, dependsOnId])
+  @@index([tenantId])
+  @@map("pm_task_dependencies")
+}
+
+model TaskWatcher {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  taskId         String       @db.Uuid
+  task           Task         @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  
+  userId         String       @db.Uuid
+  user           User         @relation(fields: [userId], references: [id])
+  
+  createdAt      DateTime     @default(now())
+
+  @@unique([taskId, userId])
+  @@index([tenantId])
+  @@map("pm_task_watchers")
+}
+
+model TaskReminder {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  taskId         String       @db.Uuid
+  task           Task         @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  
+  userId         String       @db.Uuid
+  user           User         @relation(fields: [userId], references: [id])
+  
+  remindAt       DateTime
+  type           ReminderType @default(IN_APP)
+  isSent         Boolean      @default(false)
+  
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([tenantId])
+  @@map("pm_task_reminders")
+}
+
+model ProjectFile {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  projectId      String       @db.Uuid
+  project        Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  fileName       String       @db.VarChar(255)
+  fileUrl        String       @db.VarChar(512)
+  fileSize       Int
+  contentType    String       @db.VarChar(100)
+  
+  uploadedById   String       @db.Uuid
+  uploadedBy     User         @relation(fields: [uploadedById], references: [id])
+  
+  createdAt      DateTime     @default(now())
+
+  @@index([tenantId])
+  @@map("pm_project_files")
+}
+
+model ProjectTemplate {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  name           String       @db.VarChar(255)
+  description    String?      @db.Text
+  config         Json
+  
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([tenantId])
+  @@map("pm_project_templates")
+}
+
+model TaskNotification {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  userId         String       @db.Uuid
+  user           User         @relation(fields: [userId], references: [id])
+  
+  title          String       @db.VarChar(255)
+  message        String       @db.Text
+  isRead         Boolean      @default(false)
+  
+  createdAt      DateTime     @default(now())
+
+  @@index([tenantId])
+  @@index([userId])
+  @@map("pm_task_notifications")
+}
+
+
+// --------------------------------------------------------------------------
+// Phase 07M - Notification & Communication Platform
+// --------------------------------------------------------------------------
+
+enum NotificationType {
+  SYSTEM
+  ALERT
+  REMINDER
+  MESSAGE
+  ANNOUNCEMENT
+}
+
+enum NotificationChannel {
+  EMAIL
+  SMS
+  PUSH
+  IN_APP
+  WEBHOOK
+}
+
+enum NotificationStatus {
+  PENDING
+  PROCESSING
+  SENT
+  FAILED
+  READ
+}
+
+enum MessageStatus {
+  SENT
+  DELIVERED
+  READ
+  FAILED
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  FILE
+  SYSTEM
+}
+
+enum WebhookStatus {
+  ACTIVE
+  INACTIVE
+  FAILED
+}
+
+enum AnnouncementPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum DeliveryStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+enum RecipientType {
+  USER
+  ROLE
+  DEPARTMENT
+  ALL
+}
+
+model Notification {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  type           NotificationType
+  title          String       @db.VarChar(255)
+  body           String       @db.Text
+  data           Json?        
+
+  senderId       String?      @db.Uuid
+  sender         User?        @relation("NotificationSender", fields: [senderId], references: [id], onDelete: SetNull)
+
+  recipients     NotificationRecipient[]
+  status         NotificationStatus @default(PENDING)
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  @@index([tenantId])
+  @@map("nc_notifications")
+}
+
+model NotificationRecipient {
+  id             String       @id @default(uuid()) @db.Uuid
+  notificationId String       @db.Uuid
+  notification   Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+
+  userId         String       @db.Uuid
+  user           User         @relation("NotificationReceiver", fields: [userId], references: [id], onDelete: Cascade)
+
+  channel        NotificationChannel
+  status         DeliveryStatus @default(PENDING)
+  isRead         Boolean      @default(false)
+  readAt         DateTime?
+  error          String?      @db.Text
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([notificationId])
+  @@index([userId])
+  @@map("nc_notification_recipients")
+}
+
+model NotificationPreference {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  userId         String       @db.Uuid
+  user           User         @relation("NotificationPrefs", fields: [userId], references: [id], onDelete: Cascade)
+
+  type           NotificationType
+  emailEnabled   Boolean      @default(true)
+  smsEnabled     Boolean      @default(false)
+  pushEnabled    Boolean      @default(true)
+  inAppEnabled   Boolean      @default(true)
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@unique([userId, type])
+  @@index([tenantId])
+  @@map("nc_notification_preferences")
+}
+
+model NotificationTemplate {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  code           String       @db.VarChar(100)
+  name           String       @db.VarChar(255)
+  subject        String       @db.VarChar(255)
+  body           String       @db.Text
+  type           NotificationType
+  channel        NotificationChannel
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@unique([tenantId, code, channel])
+  @@index([tenantId])
+  @@map("nc_notification_templates")
+}
+
+model EmailLog {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  recipientEmail String       @db.VarChar(255)
+  subject        String       @db.VarChar(255)
+  body           String       @db.Text
+  status         DeliveryStatus @default(PENDING)
+  error          String?      @db.Text
+
+  createdAt      DateTime     @default(now())
+
+  @@index([tenantId])
+  @@map("nc_email_logs")
+}
+
+model SmsLog {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  phoneNumber    String       @db.VarChar(50)
+  message        String       @db.Text
+  status         DeliveryStatus @default(PENDING)
+  error          String?      @db.Text
+
+  createdAt      DateTime     @default(now())
+
+  @@index([tenantId])
+  @@map("nc_sms_logs")
+}
+
+model PushNotification {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  userId         String       @db.Uuid
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deviceToken    String       @db.VarChar(255)
+  title          String       @db.VarChar(255)
+  body           String       @db.Text
+  status         DeliveryStatus @default(PENDING)
+  error          String?      @db.Text
+
+  createdAt      DateTime     @default(now())
+
+  @@index([tenantId])
+  @@index([userId])
+  @@map("nc_push_notifications")
+}
+
+model InAppNotification {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  userId         String       @db.Uuid
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title          String       @db.VarChar(255)
+  body           String       @db.Text
+  isRead         Boolean      @default(false)
+  readAt         DateTime?
+
+  createdAt      DateTime     @default(now())
+
+  @@index([tenantId])
+  @@index([userId])
+  @@map("nc_in_app_notifications")
+}
+
+model Webhook {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  name           String       @db.VarChar(255)
+  url            String       @db.VarChar(512)
+  secret         String?      @db.VarChar(255)
+  events         String[]     
+  status         WebhookStatus @default(ACTIVE)
+
+  deliveries     IntegrationWebhookDelivery[]
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([tenantId])
+  @@map("nc_webhooks")
+}
+
+model IntegrationWebhookDelivery {
+  id             String       @id @default(uuid()) @db.Uuid
+  webhookId      String       @db.Uuid
+  webhook        Webhook      @relation(fields: [webhookId], references: [id], onDelete: Cascade)
+
+  event          String       @db.VarChar(100)
+  payload        Json
+  responseStatus Int?
+  responseBody   String?      @db.Text
+  isSuccessful   Boolean      @default(false)
+  error          String?      @db.Text
+
+  createdAt      DateTime     @default(now())
+
+  @@index([webhookId])
+  @@map("nc_webhook_deliveries")
+}
+
+model ChatRoom {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  name           String?      @db.VarChar(255)
+  isGroup        Boolean      @default(false)
+  
+  participants   ChatParticipant[]
+  messages       ChatMessage[]
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  @@index([tenantId])
+  @@map("nc_chat_rooms")
+}
+
+model ChatParticipant {
+  id             String       @id @default(uuid()) @db.Uuid
+  roomId         String       @db.Uuid
+  room           ChatRoom     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  userId         String       @db.Uuid
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  joinedAt       DateTime     @default(now())
+  leftAt         DateTime?
+  lastReadMessageId String?   @db.Uuid 
+
+  @@unique([roomId, userId])
+  @@index([userId])
+  @@map("nc_chat_participants")
+}
+
+model ChatMessage {
+  id             String       @id @default(uuid()) @db.Uuid
+  roomId         String       @db.Uuid
+  room           ChatRoom     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  senderId       String       @db.Uuid
+  sender         User         @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+
+  type           MessageType  @default(TEXT)
+  content        String       @db.Text
+  status         MessageStatus @default(SENT)
+
+  attachments    MessageAttachment[]
+  reactions      MessageReaction[]
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  @@index([roomId])
+  @@index([senderId])
+  @@map("nc_chat_messages")
+}
+
+model MessageAttachment {
+  id             String       @id @default(uuid()) @db.Uuid
+  messageId      String       @db.Uuid
+  message        ChatMessage  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  fileUrl        String       @db.VarChar(512)
+  fileName       String       @db.VarChar(255)
+  fileType       String       @db.VarChar(100)
+  fileSize       Int
+
+  createdAt      DateTime     @default(now())
+
+  @@index([messageId])
+  @@map("nc_message_attachments")
+}
+
+model MessageReaction {
+  id             String       @id @default(uuid()) @db.Uuid
+  messageId      String       @db.Uuid
+  message        ChatMessage  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  userId         String       @db.Uuid
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  emoji          String       @db.VarChar(20)
+
+  createdAt      DateTime     @default(now())
+
+  @@unique([messageId, userId, emoji])
+  @@map("nc_message_reactions")
+}
+
+model Announcement {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  title          String       @db.VarChar(255)
+  content        String       @db.Text
+  priority       AnnouncementPriority @default(NORMAL)
+
+  publisherId    String       @db.Uuid
+  publisher      User         @relation("AnnouncementPublisher", fields: [publisherId], references: [id], onDelete: Cascade)
+
+  validUntil     DateTime?
+  status         DeliveryStatus @default(PENDING)
+
+  recipients     AnnouncementRecipient[]
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  @@index([tenantId])
+  @@map("nc_announcements")
+}
+
+model AnnouncementRecipient {
+  id             String       @id @default(uuid()) @db.Uuid
+  announcementId String       @db.Uuid
+  announcement   Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+
+  userId         String       @db.Uuid
+  user           User         @relation("AnnouncementReceiver", fields: [userId], references: [id], onDelete: Cascade)
+
+  isRead         Boolean      @default(false)
+  readAt         DateTime?
+
+  createdAt      DateTime     @default(now())
+
+  @@unique([announcementId, userId])
+  @@map("nc_announcement_recipients")
+}
+
+model NotificationQueue {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  payload        Json
+  channel        NotificationChannel
+  status         DeliveryStatus @default(PENDING)
+  retryCount     Int          @default(0)
+  nextRetryAt    DateTime?
+  error          String?      @db.Text
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([tenantId])
+  @@index([status, nextRetryAt])
+  @@map("nc_notification_queue")
+}
+
+model CommunicationAudit {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  action         String       @db.VarChar(100)
+  entityId       String       @db.Uuid
+  entityType     String       @db.VarChar(50)
+  details        Json?
+
+  userId         String?      @db.Uuid
+  user           User?        @relation("CommAuditUser", fields: [userId], references: [id], onDelete: SetNull)
+
+  createdAt      DateTime     @default(now())
+
+  @@index([tenantId])
+  @@map("nc_communication_audit")
+}
+
+
+// ============================================================================
+// PHASE 07N: ENTERPRISE REPORTS & ANALYTICS
+// ============================================================================
+
+enum ReportType {
+  STANDARD
+  CUSTOM
+  FINANCIAL
+  HR
+  PROJECT
+  CRM
+  INVENTORY
+}
+
+enum ReportStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ExportFormat {
+  CSV
+  EXCEL
+  PDF
+  JSON
+}
+
+enum WidgetType {
+  CHART
+  TABLE
+  KPI_CARD
+  MAP
+  TIMELINE
+}
+
+enum AggregationType {
+  SUM
+  COUNT
+  AVERAGE
+  MIN
+  MAX
+}
+
+enum ScheduleFrequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+  QUARTERLY
+  YEARLY
+}
+
+enum MetricType {
+  REVENUE
+  EXPENSE
+  USER_COUNT
+  RETENTION
+  CONVERSION
+  PERFORMANCE
+  OTHER
+}
+
+enum ChartType {
+  BAR
+  LINE
+  PIE
+  DOUGHNUT
+  AREA
+  SCATTER
+}
+
+model Report {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  name           String       @db.VarChar(255)
+  description    String?      @db.Text
+  type           ReportType   @default(STANDARD)
+  status         ReportStatus @default(DRAFT)
+  
+  queryConfig    Json         // JSON defining the query to run
+  columns        Json         // JSON array of columns to display
+  
+  createdBy      String       @db.Uuid
+  user           User         @relation(fields: [createdBy], references: [id], onDelete: Restrict)
+  
+  executions     ReportExecution[]
+  exports        ReportExport[]
+  schedules      ScheduledReport[]
+  shares         ReportShare[]
+  audits         ReportAudit[]
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+  version        Int          @default(1)
+
+  @@index([tenantId, type])
+  @@index([tenantId, status])
+}
+
+model ReportTemplate {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  name           String       @db.VarChar(255)
+  description    String?      @db.Text
+  type           ReportType
+  
+  defaultConfig  Json
+  defaultColumns Json
+
+  isSystem       Boolean      @default(false)
+  
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  @@index([tenantId, type])
+}
+
+model Dashboard {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  name           String       @db.VarChar(255)
+  description    String?      @db.Text
+  layout         Json?        // Dashboard grid layout definition
+  
+  isDefault      Boolean      @default(false)
+  
+  createdBy      String       @db.Uuid
+
+  widgets        DashboardWidget[]
+  
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+
+  @@index([tenantId, isDefault])
+}
+
+model DashboardWidget {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  dashboardId    String       @db.Uuid
+  dashboard      Dashboard    @relation(fields: [dashboardId], references: [id], onDelete: Cascade)
+  
+  name           String       @db.VarChar(255)
+  type           WidgetType
+  chartType      ChartType?
+  
+  positionX      Int          @default(0)
+  positionY      Int          @default(0)
+  width          Int          @default(1)
+  height         Int          @default(1)
+  
+  dataSource     Json         // Definition of what data feeds this widget
+  config         Json?        // Widget specific configuration
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([tenantId, dashboardId])
+}
+
+model ScheduledReport {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  reportId       String       @db.Uuid
+  report         Report       @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  name           String       @db.VarChar(255)
+  frequency      ScheduleFrequency
+  cronExpression String?      @db.VarChar(100)
+  
+  exportFormat   ExportFormat
+  recipients     Json         // List of emails or user IDs to send to
+  
+  isActive       Boolean      @default(true)
+  lastRunAt      DateTime?
+  nextRunAt      DateTime?
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([tenantId, isActive, nextRunAt])
+}
+
+model ReportExecution {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  reportId       String       @db.Uuid
+  report         Report       @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  executedBy     String?      @db.Uuid // null if system scheduled
+  
+  status         String       @db.VarChar(50) // e.g. PENDING, SUCCESS, FAILED
+  durationMs     Int?
+  rowsReturned   Int?
+  errorMessage   String?      @db.Text
+  
+  startedAt      DateTime     @default(now())
+  completedAt    DateTime?
+
+  @@index([tenantId, reportId, status])
+}
+
+model ReportExport {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  reportId       String       @db.Uuid
+  report         Report       @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  
+  format         ExportFormat
+  fileUrl        String       @db.Text
+  fileSize       Int?
+  
+  requestedBy    String       @db.Uuid
+
+  expiresAt      DateTime?
+  createdAt      DateTime     @default(now())
+
+  @@index([tenantId, reportId])
+}
+
+model SavedFilter {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  name           String       @db.VarChar(255)
+  entityType     String       @db.VarChar(100) // e.g. "Invoice", "Employee"
+  
+  filterConfig   Json         // JSON defining the filter criteria
+  
+  userId         String       @db.Uuid
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([tenantId, entityType, userId])
+}
+
+model KpiSnapshot {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  metricId       String       @db.Uuid
+  metric         MetricDefinition @relation(fields: [metricId], references: [id], onDelete: Cascade)
+
+  value          Float
+  dimensions     Json?        // Breakdowns (e.g., by department, region)
+  
+  snapshotDate   DateTime     @default(now())
+
+  @@index([tenantId, metricId, snapshotDate])
+}
+
+model MetricDefinition {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  name           String       @db.VarChar(255)
+  code           String       @db.VarChar(100)
+  type           MetricType
+  aggregation    AggregationType
+  
+  description    String?      @db.Text
+  isActive       Boolean      @default(true)
+
+  snapshots      KpiSnapshot[]
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@unique([tenantId, code])
+  @@index([tenantId, type])
+}
+
+model AnalyticsEvent {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  eventName      String       @db.VarChar(100)
+  userId         String?      @db.Uuid
+  
+  payload        Json
+  source         String       @db.VarChar(100)
+  
+  timestamp      DateTime     @default(now())
+
+  @@index([tenantId, eventName, timestamp])
+}
+
+model ReportShare {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  reportId       String       @db.Uuid
+  report         Report       @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  sharedWithId   String       @db.Uuid
+  permission     String       @db.VarChar(50) // READ, WRITE
+
+  sharedBy       String       @db.Uuid
+  
+  createdAt      DateTime     @default(now())
+
+  @@unique([tenantId, reportId, sharedWithId])
+}
+
+model ReportSubscription {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  reportId       String       @db.Uuid
+  userId         String       @db.Uuid
+  
+  isActive       Boolean      @default(true)
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@unique([tenantId, reportId, userId])
+}
+
+model ReportAudit {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @db.Uuid
+  tenant         Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  reportId       String       @db.Uuid
+  report         Report       @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  userId         String       @db.Uuid
+  action         String       @db.VarChar(100) // CREATED, MODIFIED, EXECUTED, EXPORTED
+  details        Json?
+
+  createdAt      DateTime     @default(now())
+
+  @@index([tenantId, reportId, createdAt])
+}
+
+
+
+model AiProvider {
+  id             String    @id @default(uuid()) @db.Uuid
+  tenantId       String    @db.Uuid
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  name           String    @db.VarChar(100)
+  providerCode   String    @db.VarChar(50) // e.g., OPENAI, ANTHROPIC, GEMINI
+  apiKey         String    // Encrypted
+  baseUrl        String?
+  isActive       Boolean   @default(true)
+  isDefault      Boolean   @default(false)
+  
+  conversations  AiConversation[]
+  usageLogs      AiUsage[]
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  @@index([tenantId, isActive])
+}
+
+model AiPromptTemplate {
+  id             String    @id @default(uuid()) @db.Uuid
+  tenantId       String    @db.Uuid
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  code           String    @db.VarChar(100) // e.g., HR_ASSISTANT
+  name           String    @db.VarChar(255)
+  description    String?   @db.Text
+  systemPrompt   String    @db.Text
+  userPrompt     String?   @db.Text
+  isActive       Boolean   @default(true)
+  version        Int       @default(1)
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  @@unique([tenantId, code])
+}
+
+model AiConversation {
+  id             String    @id @default(uuid()) @db.Uuid
+  tenantId       String    @db.Uuid
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  userId         String    @db.Uuid
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title          String?   @db.VarChar(255)
+  providerId     String?   @db.Uuid
+  provider       AiProvider? @relation(fields: [providerId], references: [id], onDelete: SetNull)
+  status         String    @default("ACTIVE") // ACTIVE, ARCHIVED
+
+  messages       AiConversationMessage[]
+  usages         AiUsage[]
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  @@index([tenantId, userId])
+}
+
+model AiConversationMessage {
+  id             String    @id @default(uuid()) @db.Uuid
+  tenantId       String    @db.Uuid
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  conversationId String    @db.Uuid
+  conversation   AiConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           String    @db.VarChar(50) // SYSTEM, USER, ASSISTANT, TOOL
+  content        String    @db.Text
+  toolCalls      Json?
+  toolResult     Json?
+  
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  @@index([conversationId])
+}
+
+model AiUsage {
+  id             String    @id @default(uuid()) @db.Uuid
+  tenantId       String    @db.Uuid
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  userId         String    @db.Uuid
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  conversationId String?   @db.Uuid
+  conversation   AiConversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+  providerId     String?   @db.Uuid
+  provider       AiProvider? @relation(fields: [providerId], references: [id], onDelete: SetNull)
+  
+  modelName      String    @db.VarChar(100)
+  promptTokens   Int       @default(0)
+  completionTokens Int     @default(0)
+  totalTokens    Int       @default(0)
+  costEst        Decimal   @db.Decimal(10, 6) @default(0)
+  latencyMs      Int       @default(0)
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  @@index([tenantId, userId])
+}
+
+model AiDocument {
+  id             String    @id @default(uuid()) @db.Uuid
+  tenantId       String    @db.Uuid
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  title          String    @db.VarChar(255)
+  sourceType     String    @db.VarChar(50) // KNOWLEDGE_BASE, UPLOAD, DB_RECORD
+  sourceId       String?   @db.VarChar(100)
+  content        String    @db.Text
+  metadata       Json?
+  
+  embeddings     AiEmbedding[]
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  @@index([tenantId, sourceType])
+}
+
+model AiEmbedding {
+  id             String    @id @default(uuid()) @db.Uuid
+  tenantId       String    @db.Uuid
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  documentId     String    @db.Uuid
+  document       AiDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  chunkIndex     Int       @default(0)
+  content        String    @db.Text
+  vector         Unsupported("vector(1536)")?
+  
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  @@index([documentId])
+}
+
+model AiAudit {
+  id             String    @id @default(uuid()) @db.Uuid
+  tenantId       String    @db.Uuid
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  userId         String    @db.Uuid
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  action         String    @db.VarChar(100)
+  entityType     String    @db.VarChar(100)
+  entityId       String?   @db.Uuid
+  details        Json?
+  ipAddress      String?   @db.VarChar(45)
+
+  createdAt      DateTime  @default(now())
+}
+
+
+model Workflow {
+  id             String    @id @default(uuid()) @db.Uuid
+  tenantId       String    @db.Uuid
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  code           String    @db.VarChar(100)
+  name           String    @db.VarChar(255)
+  description    String?   @db.Text
+  status         String    @default("DRAFT") // DRAFT, PUBLISHED, ARCHIVED
+  isActive       Boolean   @default(true)
+  version        Int       @default(1)
+
+  nodes          WorkflowNode[]
+  edges          WorkflowEdge[]
+  executions     WorkflowExecution[]
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  @@unique([tenantId, code])
+}
+
+model WorkflowNode {
+  id             String    @id @default(uuid()) @db.Uuid
+  tenantId       String    @db.Uuid
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  workflowId     String    @db.Uuid
+  workflow       Workflow  @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  
+  type           String    @db.VarChar(50) // TRIGGER, ACTION, CONDITION, PARALLEL, APPROVAL, WAIT
+  name           String    @db.VarChar(255)
+  config         Json?
+  positionX      Int       @default(0)
+  positionY      Int       @default(0)
+
+  outgoingEdges  WorkflowEdge[] @relation("SourceNode")
+  incomingEdges  WorkflowEdge[] @relation("TargetNode")
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model WorkflowEdge {
+  id             String    @id @default(uuid()) @db.Uuid
+  tenantId       String    @db.Uuid
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  workflowId     String    @db.Uuid
+  workflow       Workflow  @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  
+  sourceId       String    @db.Uuid
+  source         WorkflowNode @relation("SourceNode", fields: [sourceId], references: [id], onDelete: Cascade)
+  targetId       String    @db.Uuid
+  target         WorkflowNode @relation("TargetNode", fields: [targetId], references: [id], onDelete: Cascade)
+  
+  condition      String?   @db.Text // Simple expression or JS
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model WorkflowExecution {
+  id             String    @id @default(uuid()) @db.Uuid
+  tenantId       String    @db.Uuid
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  workflowId     String    @db.Uuid
+  workflow       Workflow  @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  
+  status         String    @default("PENDING") // PENDING, RUNNING, COMPLETED, FAILED, SUSPENDED, CANCELLED
+  startedAt      DateTime?
+  completedAt    DateTime?
+  triggerData    Json?
+
+  variables      WorkflowVariable[]
+  logs           WorkflowLog[]
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([tenantId, status])
+}
+
+model WorkflowVariable {
+  id             String    @id @default(uuid()) @db.Uuid
+  tenantId       String    @db.Uuid
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  executionId    String    @db.Uuid
+  execution      WorkflowExecution @relation(fields: [executionId], references: [id], onDelete: Cascade)
+  
+  key            String    @db.VarChar(100)
+  value          Json?
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@unique([executionId, key])
+}
+
+model WorkflowLog {
+  id             String    @id @default(uuid()) @db.Uuid
+  tenantId       String    @db.Uuid
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  executionId    String    @db.Uuid
+  execution      WorkflowExecution @relation(fields: [executionId], references: [id], onDelete: Cascade)
+  
+  nodeId         String?   @db.Uuid
+  level          String    @db.VarChar(20) // INFO, WARN, ERROR
+  message        String    @db.Text
+  details        Json?
+
+  createdAt      DateTime  @default(now())
+}
+
+
+model Folder {
+  id             String    @id @default(uuid()) @db.Uuid
+  tenantId       String    @db.Uuid
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  name           String    @db.VarChar(255)
+  parentId       String?   @db.Uuid
+  parent         Folder?   @relation("FolderToFolder", fields: [parentId], references: [id], onDelete: Cascade)
+  children       Folder[]  @relation("FolderToFolder")
+  
+  documents      Document[]
+  
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  @@unique([tenantId, parentId, name])
+}
+
+model Document {
+  id             String    @id @default(uuid()) @db.Uuid
+  tenantId       String    @db.Uuid
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  folderId       String?   @db.Uuid
+  folder         Folder?   @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  
+  title          String    @db.VarChar(255)
+  description    String?   @db.Text
+  fileSize       BigInt    @default(0)
+  mimeType       String    @db.VarChar(100)
+  extension      String    @db.VarChar(20)
+  checksum       String?   @db.VarChar(255) // SHA-256
+  
+  storageKey     String    @db.VarChar(500)
+  storageProvider String   @default("LOCAL") // LOCAL, S3, MINIO, AZURE, GCS
+  
+  status         String    @default("ACTIVE") // ACTIVE, QUARANTINED, ARCHIVED
+  isLocked       Boolean   @default(false)
+  ocrText        String?   @db.Text
+  
+  versions       DocumentVersion[]
+  shares         DocumentShare[]
+  tags           DocumentTag[]
+  metadata       DocumentMetadata[]
+  comments       DocumentComment[]
+  locks          DocumentLock[]
+  audits         DocumentAudit[]
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  @@index([tenantId, folderId])
+  @@index([tenantId, status])
+}
+
+model DocumentVersion {
+  id             String    @id @default(uuid()) @db.Uuid
+  tenantId       String    @db.Uuid
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  documentId     String    @db.Uuid
+  document       Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  
+  versionNumber  Int
+  storageKey     String    @db.VarChar(500)
+  fileSize       BigInt    @default(0)
+  checksum       String?   @db.VarChar(255)
+  changeLog      String?   @db.Text
+
+  createdAt      DateTime  @default(now())
+
+  @@unique([documentId, versionNumber])
+}
+
+model DocumentShare {
+  id             String    @id @default(uuid()) @db.Uuid
+  tenantId       String    @db.Uuid
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  documentId     String    @db.Uuid
+  document       Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  
+  sharedWithId   String?   @db.Uuid // Optional User ID
+  sharedWithEmail String?  @db.VarChar(255) // External Share
+  
+  permission     String    @default("READ") // READ, WRITE, ADMIN
+  expiresAt      DateTime?
+  
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model DocumentMetadata {
+  id             String    @id @default(uuid()) @db.Uuid
+  tenantId       String    @db.Uuid
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  documentId     String    @db.Uuid
+  document       Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  
+  key            String    @db.VarChar(100)
+  value          String    @db.Text
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@unique([documentId, key])
+}
+
+model DocumentTag {
+  id             String    @id @default(uuid()) @db.Uuid
+  tenantId       String    @db.Uuid
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  documentId     String    @db.Uuid
+  document       Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  
+  tag            String    @db.VarChar(100)
+
+  createdAt      DateTime  @default(now())
+
+  @@unique([documentId, tag])
+}
+
+model DocumentComment {
+  id             String    @id @default(uuid()) @db.Uuid
+  tenantId       String    @db.Uuid
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  documentId     String    @db.Uuid
+  document       Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  
+  userId         String    @db.Uuid
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  content        String    @db.Text
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model DocumentLock {
+  id             String    @id @default(uuid()) @db.Uuid
+  tenantId       String    @db.Uuid
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  documentId     String    @db.Uuid @unique
+  document       Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  
+  userId         String    @db.Uuid
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  expiresAt      DateTime?
+
+  createdAt      DateTime  @default(now())
+}
+
+model DocumentAudit {
+  id             String    @id @default(uuid()) @db.Uuid
+  tenantId       String    @db.Uuid
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  documentId     String    @db.Uuid
+  document       Document  @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  
+  userId         String?   @db.Uuid
+  action         String    @db.VarChar(100) // UPLOAD, DOWNLOAD, SHARE, DELETE, RESTORE, SCAN_VIRUS
+  details        Json?
+  ipAddress      String?   @db.VarChar(45)
+  userAgent      String?   @db.Text
+
+  createdAt      DateTime  @default(now())
+}
+
+
+model Integration {
+  id             String    @id @default(uuid()) @db.Uuid
+  tenantId       String    @db.Uuid
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  provider       String    @db.VarChar(100) // STRIPE, GOOGLE, SLACK, etc.
+  category       String    @db.VarChar(100) // PAYMENT, CALENDAR, CRM, etc.
+  name           String    @db.VarChar(255)
+  status         String    @default("INACTIVE") // ACTIVE, INACTIVE, ERROR
+  
+  configuration  ProviderConfiguration?
+  credentials    IntegrationCredential[]
+  syncJobs       SyncJob[]
+  audits         IntegrationAudit[]
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  @@unique([tenantId, provider])
+}
+
+model ProviderConfiguration {
+  id             String      @id @default(uuid()) @db.Uuid
+  integrationId  String      @db.Uuid @unique
+  integration    Integration @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+  
+  config         Json        // Provider specific non-sensitive config
+  
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+model IntegrationCredential {
+  id             String      @id @default(uuid()) @db.Uuid
+  integrationId  String      @db.Uuid
+  integration    Integration @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+  
+  keyName        String      @db.VarChar(255)
+  encryptedValue String      @db.Text
+  iv             String      @db.VarChar(255)
+  
+  expiresAt      DateTime?
+
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+model HubWebhookEndpoint {
+  id             String      @id @default(uuid()) @db.Uuid
+  tenantId       String      @db.Uuid
+  tenant         Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  url            String      @db.VarChar(1000)
+  secret         String?     @db.VarChar(255)
+  events         String[]
+  isActive       Boolean     @default(true)
+  
+  deliveries     HubWebhookDelivery[]
+
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+model HubWebhookDelivery {
+  id                String      @id @default(uuid()) @db.Uuid
+  endpointId        String      @db.Uuid
+  endpoint          HubWebhookEndpoint @relation(fields: [endpointId], references: [id], onDelete: Cascade)
+  
+  eventType         String      @db.VarChar(255)
+  payload           Json
+  status            String      @default("PENDING") // PENDING, SUCCESS, FAILED
+  attempts          Int         @default(0)
+  nextAttemptAt     DateTime?
+  lastResponseCode  Int?
+  
+  logs              HubWebhookLog[]
+
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+}
+
+model HubWebhookLog {
+  id                String      @id @default(uuid()) @db.Uuid
+  deliveryId        String      @db.Uuid
+  delivery          HubWebhookDelivery @relation(fields: [deliveryId], references: [id], onDelete: Cascade)
+  
+  attemptNumber     Int
+  responseCode      Int?
+  responseBody      String?     @db.Text
+  error             String?     @db.Text
+  durationMs        Int?
+
+  createdAt         DateTime    @default(now())
+}
+
+model SyncJob {
+  id             String      @id @default(uuid()) @db.Uuid
+  integrationId  String      @db.Uuid
+  integration    Integration @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+  
+  entityType     String      @db.VarChar(100) // INVOICE, LEAD, CALENDAR
+  direction      String      @db.VarChar(20)  // INBOUND, OUTBOUND
+  status         String      @default("PENDING") // PENDING, IN_PROGRESS, SUCCESS, FAILED
+  
+  logs           SyncLog[]
+
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+model SyncLog {
+  id             String      @id @default(uuid()) @db.Uuid
+  jobId          String      @db.Uuid
+  job            SyncJob     @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  
+  level          String      @db.VarChar(20) // INFO, WARN, ERROR
+  message        String      @db.Text
+  details        Json?
+
+  createdAt      DateTime    @default(now())
+}
+
+model IntegrationAudit {
+  id             String      @id @default(uuid()) @db.Uuid
+  integrationId  String      @db.Uuid
+  integration    Integration @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+  
+  userId         String?     @db.Uuid
+  action         String      @db.VarChar(100)
+  details        Json?
+
+  createdAt      DateTime    @default(now())
+}
+
+
+model SaaSSubscriptionPlan {
+  id             String    @id @default(uuid()) @db.Uuid
+  
+  name           String    @db.VarChar(100) // FREE, STARTER, PRO, ENTERPRISE
+  description    String?   @db.Text
+  price          Decimal   @db.Decimal(10, 2)
+  currency       String    @db.VarChar(3) @default("USD")
+  interval       String    @db.VarChar(20) // MONTHLY, YEARLY
+  
+  features       SaaSPlanFeature[]
+  subscriptions  SaaSSubscription[]
+  meteredFeatures SaaSPlanMeteredFeature[]
+
+  isActive       Boolean   @default(true)
+  version        Int       @default(1)
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+}
+
+model SaaSPlanFeature {
+  id             String    @id @default(uuid()) @db.Uuid
+  planId         String    @db.Uuid
+  plan           SaaSSubscriptionPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  
+  key            String    @db.VarChar(100) // USERS, STORAGE, PROJECTS
+  value          String    @db.VarChar(255) // "10", "UNLIMITED", "100GB"
+  limit          Int?      // Null means unlimited or boolean
+
+  createdAt      DateTime  @default(now())
+}
+
+model SaaSPlanMeteredFeature {
+  id             String    @id @default(uuid()) @db.Uuid
+  planId         String    @db.Uuid
+  plan           SaaSSubscriptionPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  
+  key            String    @db.VarChar(100) // API_CALLS, AI_TOKENS
+  pricePerUnit   Decimal   @db.Decimal(10, 4)
+  freeUnits      Int       @default(0)
+
+  createdAt      DateTime  @default(now())
+}
+
+model SaaSSubscription {
+  id             String    @id @default(uuid()) @db.Uuid
+  tenantId       String    @db.Uuid @unique
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  planId         String    @db.Uuid
+  plan           SaaSSubscriptionPlan @relation(fields: [planId], references: [id], onDelete: Restrict)
+  
+  status         String    @db.VarChar(50) // ACTIVE, CANCELED, PAST_DUE, TRIALING
+  
+  trialStartsAt  DateTime?
+  trialEndsAt    DateTime?
+  
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  
+  cancelAtPeriodEnd Boolean @default(false)
+  canceledAt        DateTime?
+  
+  provider       String?   @db.VarChar(50) // STRIPE, RAZORPAY
+  providerSubId  String?   @db.VarChar(255)
+  
+  usages         SaaSUsageRecord[]
+  invoices       SaaSInvoice[]
+
+  version        Int       @default(1)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+}
+
+model SaaSSubscriptionUsage {
+  id             String    @id @default(uuid()) @db.Uuid
+  tenantId       String    @db.Uuid
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  key            String    @db.VarChar(100)
+  currentUsage   Int       @default(0)
+  lastResetAt    DateTime
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@unique([tenantId, key])
+}
+
+model SaaSUsageRecord {
+  id             String    @id @default(uuid()) @db.Uuid
+  subscriptionId String    @db.Uuid
+  subscription   SaaSSubscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  
+  featureKey     String    @db.VarChar(100)
+  quantity       Int
+  timestamp      DateTime  @default(now())
+  
+  providerReported Boolean @default(false)
+}
+
+model SaaSCoupon {
+  id             String    @id @default(uuid()) @db.Uuid
+  tenantId       String?   @db.Uuid // Nullable for global coupons
+  
+  code           String    @db.VarChar(50) @unique
+  discountType   String    @db.VarChar(20) // PERCENTAGE, FIXED
+  discountValue  Decimal   @db.Decimal(10, 2)
+  
+  maxUses        Int?
+  uses           Int       @default(0)
+  
+  validFrom      DateTime?
+  validUntil     DateTime?
+  isActive       Boolean   @default(true)
+
+  createdAt      DateTime  @default(now())
+}
+
+model SaaSInvoice {
+  id             String    @id @default(uuid()) @db.Uuid
+  tenantId       String    @db.Uuid
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  subscriptionId String?   @db.Uuid
+  subscription   SaaSSubscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+  
+  amount         Decimal   @db.Decimal(10, 2)
+  currency       String    @db.VarChar(3) @default("USD")
+  
+  status         String    @db.VarChar(50) // DRAFT, OPEN, PAID, UNCOLLECTIBLE, VOID
+  
+  pdfUrl         String?   @db.VarChar(1000)
+  
+  providerInvId  String?   @db.VarChar(255)
+  
+  items          SaaSInvoiceItem[]
+  transactions   SaaSPaymentTransaction[]
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model SaaSInvoiceItem {
+  id             String    @id @default(uuid()) @db.Uuid
+  invoiceId      String    @db.Uuid
+  invoice        SaaSInvoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  
+  description    String    @db.VarChar(255)
+  amount         Decimal   @db.Decimal(10, 2)
+  quantity       Int       @default(1)
+
+  createdAt      DateTime  @default(now())
+}
+
+model SaaSPaymentTransaction {
+  id             String    @id @default(uuid()) @db.Uuid
+  tenantId       String    @db.Uuid
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  invoiceId      String?   @db.Uuid
+  invoice        SaaSInvoice? @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+  
+  provider       String    @db.VarChar(50) // STRIPE, RAZORPAY, PAYPAL
+  providerTxId   String    @db.VarChar(255) @unique
+  
+  amount         Decimal   @db.Decimal(10, 2)
+  currency       String    @db.VarChar(3) @default("USD")
+  
+  status         String    @db.VarChar(50) // REQUIRES_PAYMENT_METHOD, SUCCEEDED, FAILED
+  method         String?   @db.VarChar(50) // CARD, BANK_TRANSFER
+  
+  receiptUrl     String?   @db.VarChar(1000)
+  
+  refunds        SaaSRefund[]
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model SaaSRefund {
+  id             String    @id @default(uuid()) @db.Uuid
+  transactionId  String    @db.Uuid
+  transaction    SaaSPaymentTransaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  
+  amount         Decimal   @db.Decimal(10, 2)
+  reason         String?   @db.VarChar(255)
+  status         String    @db.VarChar(50) // PENDING, SUCCEEDED, FAILED
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model SaaSBillingAudit {
+  id             String    @id @default(uuid()) @db.Uuid
+  tenantId       String    @db.Uuid
+  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  action         String    @db.VarChar(100) // UPGRADE, CANCEL, PAYMENT_FAILED
+  details        Json?
+  userId         String?   @db.Uuid
+
+  createdAt      DateTime  @default(now())
+}

@@ -1,0 +1,62 @@
+name: Backend CI
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+    paths:
+      - 'apps/api/**'
+  pull_request:
+    branches: [ "main", "develop" ]
+    paths:
+      - 'apps/api/**'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/api
+
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: admin_password
+          POSTGRES_DB: fleximanage_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        cache-dependency-path: apps/api/package-lock.json || apps/api/package.json
+        
+    - name: Install Dependencies
+      run: npm ci || npm install
+      
+    - name: Prisma Generate
+      run: npx prisma generate
+      
+    - name: Lint
+      run: npm run lint
+      
+    - name: Build
+      run: npm run build
+      
+    - name: Unit Tests
+      run: npm run test
