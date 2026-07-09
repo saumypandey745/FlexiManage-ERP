@@ -19,7 +19,7 @@ interface LeadFormProps {
 
 export function LeadForm({ initialData, leadId, onSuccess }: LeadFormProps) {
   const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<CreateLeadDto>({
-    resolver: zodResolver(CreateLeadSchema) as any,
+    resolver: zodResolver(CreateLeadSchema as any),
     defaultValues: initialData || { status: 'NEW' },
   });
 

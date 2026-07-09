@@ -19,7 +19,7 @@ interface CustomerFormProps {
 
 export function CustomerForm({ initialData, customerId, onSuccess }: CustomerFormProps) {
   const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<CreateCustomerDto>({
-    resolver: zodResolver(CreateCustomerSchema) as any,
+    resolver: zodResolver(CreateCustomerSchema as any),
     defaultValues: initialData || {},
   });
 

@@ -20,8 +20,8 @@ interface OpportunityFormProps {
 
 export function OpportunityForm({ initialData, opportunityId, onSuccess }: OpportunityFormProps) {
   const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<CreateOpportunityDto>({
-    resolver: zodResolver(CreateOpportunitySchema) as any,
-    defaultValues: initialData || { stage: 'PROSPECTING', probability: 0 },
+    resolver: zodResolver(CreateOpportunitySchema as any),
+    defaultValues: initialData || { stage: 'PROSPECTING', probability: 10 },
   });
 
   const { data: customers } = useGetCustomers();

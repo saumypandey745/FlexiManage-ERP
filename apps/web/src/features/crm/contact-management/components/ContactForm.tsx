@@ -20,7 +20,7 @@ interface ContactFormProps {
 
 export function ContactForm({ initialData, contactId, customerId, onSuccess }: ContactFormProps) {
   const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<CreateContactDto>({
-    resolver: zodResolver(CreateContactSchema) as any,
+    resolver: zodResolver(CreateContactSchema as any),
     defaultValues: initialData || { isPrimary: false, customerId },
   });
 
