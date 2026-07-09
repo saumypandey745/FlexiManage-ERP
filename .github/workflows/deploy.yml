@@ -34,14 +34,7 @@ jobs:
         run: npm run build
         working-directory: apps/api
 
-      - name: Install Railway CLI
-        run: npm install -g @railway/cli
 
-      - name: Deploy to Railway
-        working-directory: .
-        run: railway up --service 80d25c7a-8d7c-4a76-a969-f4e7e507690d --detach
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
 
   deploy-frontend:
     name: Deploy Frontend to Vercel

@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: fleximanage-api
+    env: node
+    buildCommand: npm install && npm run build --filter=api
+    startCommand: cd apps/api && npm run start:prod
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        fromDatabase:
+          name: fleximanage-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: fleximanage-redis
+          property: connectionString
+      - key: JWT_SECRET
+        sync: false
+
+  - type: redis
+    name: fleximanage-redis
+    ipAllowList: []
+
+databases:
+  - name: fleximanage-db
+    databaseName: fleximanage
+    user: fleximanage_user
