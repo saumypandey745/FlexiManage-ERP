@@ -60,9 +60,13 @@ jobs:
         working-directory: apps/web
 
       - name: Deploy to Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_WS_URL: ${{ secrets.NEXT_PUBLIC_WS_URL }}
         run: |
           npx vercel --prod --yes \
-            --token=${{ secrets.VERCEL_TOKEN }} \
-            -e NEXT_PUBLIC_API_URL="${{ secrets.NEXT_PUBLIC_API_URL }}" \
-            -e NEXT_PUBLIC_WS_URL="${{ secrets.NEXT_PUBLIC_WS_URL }}"
+            --token=$VERCEL_TOKEN \
+            -e NEXT_PUBLIC_API_URL="$NEXT_PUBLIC_API_URL" \
+            -e NEXT_PUBLIC_WS_URL="$NEXT_PUBLIC_WS_URL"
         working-directory: apps/web
