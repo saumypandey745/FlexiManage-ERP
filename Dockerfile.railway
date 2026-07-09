@@ -1,37 +1,44 @@
-FROM node:20-alpine AS builder
-
+FROM node:20-alpine AS alpine
+RUN apk update && apk add --no-cache libc6-compat
+# Set working directory
 WORKDIR /app
 
-# Copy root package files
-COPY package*.json ./
-COPY turbo.json ./
+FROM alpine AS pruner
+RUN npm install -g turbo
+COPY . .
+# Extract only the api app and its dependencies
+RUN turbo prune fleximanage-api --docker
 
-# Copy API package files
-COPY apps/api/package*.json ./apps/api/
+FROM alpine AS builder
+# Install dependencies based on the pruned lockfile
+COPY --from=pruner /app/out/json/ .
+COPY --from=pruner /app/out/package-lock.json ./package-lock.json
+RUN npm ci
 
-# Install all dependencies
-RUN npm ci --workspace=apps/api --include-workspace-root || npm install
-
-# Copy API source
-COPY apps/api ./apps/api
-
-# Generate Prisma client and build
+# Copy the pruned source code and build it
+COPY --from=pruner /app/out/full/ .
+# Generate Prisma Client
 RUN cd apps/api && npx prisma generate
-RUN cd apps/api && npm run build
+RUN npm run build --filter=fleximanage-api...
 
-# ---- Runner ----
-FROM node:20-alpine AS runner
+FROM alpine AS runner
 WORKDIR /app
 
+# Set node environment
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# Copy built artifacts
-COPY --from=builder /app/apps/api/dist ./apps/api/dist
-COPY --from=builder /app/apps/api/prisma ./apps/api/prisma
-COPY --from=builder /app/apps/api/node_modules ./apps/api/node_modules
-COPY --from=builder /app/apps/api/package.json ./apps/api/package.json
+# Don't run production as root
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nestjs
+USER nestjs
+
+# Copy the entire built monorepo (because node_modules are hoisted)
+COPY --from=builder --chown=nestjs:nodejs /app .
 
 EXPOSE 3000
+
+HEALTHCHECK --interval=30s --timeout=10s --retries=5 \
+  CMD wget -qO- http://localhost:3000/health || exit 1
 
 CMD ["node", "apps/api/dist/src/main.js"]
