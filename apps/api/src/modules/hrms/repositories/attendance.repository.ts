@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../common/prisma/prisma.service';
-import { ClockInDto, ClockOutDto } from '../dto/hrms.dto';
-import { BaseException } from '../../../common/exceptions/base.exception';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../../../common/prisma/prisma.service";
+import { ClockInDto, ClockOutDto } from "../dto/hrms.dto";
+import { BaseException } from "../../../common/exceptions/base.exception";
 
 @Injectable()
 export class AttendanceRepository {
@@ -10,7 +10,7 @@ export class AttendanceRepository {
   async findAttendances(tenantId: string) {
     return this.prisma.attendance.findMany({
       where: { tenantId },
-      orderBy: { date: 'desc' },
+      orderBy: { date: "desc" },
       include: { employee: true },
     });
   }
@@ -24,7 +24,7 @@ export class AttendanceRepository {
     });
 
     if (existing) {
-      throw new BaseException('Already clocked in today', 'HRMS-ATT-409', 409);
+      throw new BaseException("Already clocked in today", "HRMS-ATT-409", 409);
     }
 
     return this.prisma.attendance.create({
@@ -46,10 +46,10 @@ export class AttendanceRepository {
     });
 
     if (!existing) {
-      throw new BaseException('No active clock-in found', 'HRMS-ATT-404', 404);
+      throw new BaseException("No active clock-in found", "HRMS-ATT-404", 404);
     }
     if (existing.clockOut) {
-      throw new BaseException('Already clocked out', 'HRMS-ATT-400', 400);
+      throw new BaseException("Already clocked out", "HRMS-ATT-400", 400);
     }
 
     return this.prisma.attendance.update({

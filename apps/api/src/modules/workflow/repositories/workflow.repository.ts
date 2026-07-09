@@ -1,8 +1,13 @@
 // @ts-nocheck
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../../../common/prisma/prisma.service';
-import { CreateWorkflowDto, UpdateWorkflowDto, CreateWorkflowNodeDto, CreateWorkflowEdgeDto } from '../dto/workflow.dto';
-import { Workflow, WorkflowNode, WorkflowEdge } from '@prisma/client';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { PrismaService } from "../../../common/prisma/prisma.service";
+import {
+  CreateWorkflowDto,
+  UpdateWorkflowDto,
+  CreateWorkflowNodeDto,
+  CreateWorkflowEdgeDto,
+} from "../dto/workflow.dto";
+import { Workflow, WorkflowNode, WorkflowEdge } from "@prisma/client";
 
 @Injectable()
 export class WorkflowRepository {
@@ -15,21 +20,25 @@ export class WorkflowRepository {
         code: dto.code,
         name: dto.name,
         description: dto.description,
-      }
+      },
     });
   }
 
-  async findMany(tenantId: string, skip = 0, take = 20): Promise<[Workflow[], number]> {
+  async findMany(
+    tenantId: string,
+    skip = 0,
+    take = 20
+  ): Promise<[Workflow[], number]> {
     return Promise.all([
       this.prisma.workflow.findMany({
         where: { tenantId, deletedAt: null },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         skip,
-        take
+        take,
       }),
       this.prisma.workflow.count({
-        where: { tenantId, deletedAt: null }
-      })
+        where: { tenantId, deletedAt: null },
+      }),
     ]);
   }
 
@@ -38,22 +47,31 @@ export class WorkflowRepository {
       where: { id, tenantId },
       include: {
         nodes: true,
-        edges: true
-      }
+        edges: true,
+      },
     });
   }
 
-  async update(tenantId: string, id: string, dto: UpdateWorkflowDto, currentVersion: number): Promise<Workflow> {
+  async update(
+    tenantId: string,
+    id: string,
+    dto: UpdateWorkflowDto,
+    currentVersion: number
+  ): Promise<Workflow> {
     return this.prisma.workflow.update({
       where: { id, tenantId, version: currentVersion },
       data: {
         ...dto,
-        version: { increment: 1 }
-      }
+        version: { increment: 1 },
+      },
     });
   }
 
-  async addNode(tenantId: string, workflowId: string, dto: CreateWorkflowNodeDto): Promise<WorkflowNode> {
+  async addNode(
+    tenantId: string,
+    workflowId: string,
+    dto: CreateWorkflowNodeDto
+  ): Promise<WorkflowNode> {
     return this.prisma.workflowNode.create({
       data: {
         tenantId,
@@ -63,26 +81,30 @@ export class WorkflowRepository {
         config: dto.config || {},
         positionX: dto.positionX || 0,
         positionY: dto.positionY || 0,
-      }
+      },
     });
   }
 
-  async addEdge(tenantId: string, workflowId: string, dto: CreateWorkflowEdgeDto): Promise<WorkflowEdge> {
+  async addEdge(
+    tenantId: string,
+    workflowId: string,
+    dto: CreateWorkflowEdgeDto
+  ): Promise<WorkflowEdge> {
     return this.prisma.workflowEdge.create({
       data: {
         tenantId,
         workflowId,
         sourceId: dto.sourceId,
         targetId: dto.targetId,
-        condition: dto.condition
-      }
+        condition: dto.condition,
+      },
     });
   }
 
   async softDelete(tenantId: string, id: string) {
     return this.prisma.workflow.update({
       where: { id, tenantId },
-      data: { deletedAt: new Date(), status: 'ARCHIVED' }
+      data: { deletedAt: new Date(), status: "ARCHIVED" },
     });
   }
 }

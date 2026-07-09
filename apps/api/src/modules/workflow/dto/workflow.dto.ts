@@ -1,28 +1,37 @@
-import { IsString, IsOptional, IsEnum, IsBoolean, IsObject, IsArray, IsUUID, IsNumber } from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsString,
+  IsOptional,
+  IsEnum,
+  IsBoolean,
+  IsObject,
+  IsArray,
+  IsUUID,
+  IsNumber,
+} from "class-validator";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export enum WorkflowStatus {
-  DRAFT = 'DRAFT',
-  PUBLISHED = 'PUBLISHED',
-  ARCHIVED = 'ARCHIVED'
+  DRAFT = "DRAFT",
+  PUBLISHED = "PUBLISHED",
+  ARCHIVED = "ARCHIVED",
 }
 
 export enum WorkflowNodeType {
-  TRIGGER = 'TRIGGER',
-  ACTION = 'ACTION',
-  CONDITION = 'CONDITION',
-  PARALLEL = 'PARALLEL',
-  APPROVAL = 'APPROVAL',
-  WAIT = 'WAIT'
+  TRIGGER = "TRIGGER",
+  ACTION = "ACTION",
+  CONDITION = "CONDITION",
+  PARALLEL = "PARALLEL",
+  APPROVAL = "APPROVAL",
+  WAIT = "WAIT",
 }
 
 export enum WorkflowExecutionStatus {
-  PENDING = 'PENDING',
-  RUNNING = 'RUNNING',
-  COMPLETED = 'COMPLETED',
-  FAILED = 'FAILED',
-  SUSPENDED = 'SUSPENDED',
-  CANCELLED = 'CANCELLED'
+  PENDING = "PENDING",
+  RUNNING = "RUNNING",
+  COMPLETED = "COMPLETED",
+  FAILED = "FAILED",
+  SUSPENDED = "SUSPENDED",
+  CANCELLED = "CANCELLED",
 }
 
 export class CreateWorkflowDto {

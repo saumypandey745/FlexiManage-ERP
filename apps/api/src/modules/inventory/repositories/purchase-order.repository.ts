@@ -1,8 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../common/prisma/prisma.service';
-import { CreatePurchaseOrderDto, ReceivePurchaseOrderDto } from '../dto/inventory.dto';
-import { POStatus, MovementType } from '@prisma/client';
-import { BaseException } from '../../../common/exceptions/base.exception';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../../../common/prisma/prisma.service";
+import {
+  CreatePurchaseOrderDto,
+  ReceivePurchaseOrderDto,
+} from "../dto/inventory.dto";
+import { POStatus, MovementType } from "@prisma/client";
+import { BaseException } from "../../../common/exceptions/base.exception";
 
 @Injectable()
 export class PurchaseOrderRepository {
@@ -11,7 +14,7 @@ export class PurchaseOrderRepository {
   async findPurchaseOrders(tenantId: string) {
     return this.prisma.purchaseOrder.findMany({
       where: { tenantId, deletedAt: null },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       include: { supplier: true, createdBy: true },
     });
   }
@@ -25,7 +28,11 @@ export class PurchaseOrderRepository {
     return po;
   }
 
-  async createPO(tenantId: string, actionUserId: string, dto: CreatePurchaseOrderDto) {
+  async createPO(
+    tenantId: string,
+    actionUserId: string,
+    dto: CreatePurchaseOrderDto
+  ) {
     return this.prisma.purchaseOrder.create({
       data: {
         tenantId,
@@ -45,9 +52,14 @@ export class PurchaseOrderRepository {
     });
   }
 
-  async receivePO(tenantId: string, id: string, actionUserId: string, dto: ReceivePurchaseOrderDto) {
+  async receivePO(
+    tenantId: string,
+    id: string,
+    actionUserId: string,
+    dto: ReceivePurchaseOrderDto
+  ) {
     const po = await this.findById(tenantId, id);
-    if (!po) throw new BaseException('PO not found', 'INV-PO-404', 404);
+    if (!po) throw new BaseException("PO not found", "INV-PO-404", 404);
 
     return this.prisma.$transaction(async (tx) => {
       // Find line
@@ -55,7 +67,8 @@ export class PurchaseOrderRepository {
         where: { poId: id, productId: dto.productId },
       });
 
-      if (!line) throw new BaseException('Product not in PO', 'INV-PO-400', 400);
+      if (!line)
+        throw new BaseException("Product not in PO", "INV-PO-400", 400);
 
       await tx.purchaseOrderLine.update({
         where: { id: line.id },

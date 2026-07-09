@@ -1,35 +1,43 @@
-import { IsString, IsOptional, IsEnum, IsUUID, IsBoolean, IsObject, IsNumber } from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsString,
+  IsOptional,
+  IsEnum,
+  IsUUID,
+  IsBoolean,
+  IsObject,
+  IsNumber,
+} from "class-validator";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export enum ReportType {
-  STANDARD = 'STANDARD',
-  CUSTOM = 'CUSTOM',
-  FINANCIAL = 'FINANCIAL',
-  HR = 'HR',
-  PROJECT = 'PROJECT',
-  CRM = 'CRM',
-  INVENTORY = 'INVENTORY'
+  STANDARD = "STANDARD",
+  CUSTOM = "CUSTOM",
+  FINANCIAL = "FINANCIAL",
+  HR = "HR",
+  PROJECT = "PROJECT",
+  CRM = "CRM",
+  INVENTORY = "INVENTORY",
 }
 
 export enum ReportStatus {
-  DRAFT = 'DRAFT',
-  PUBLISHED = 'PUBLISHED',
-  ARCHIVED = 'ARCHIVED'
+  DRAFT = "DRAFT",
+  PUBLISHED = "PUBLISHED",
+  ARCHIVED = "ARCHIVED",
 }
 
 export enum ExportFormat {
-  CSV = 'CSV',
-  EXCEL = 'EXCEL',
-  PDF = 'PDF',
-  JSON = 'JSON'
+  CSV = "CSV",
+  EXCEL = "EXCEL",
+  PDF = "PDF",
+  JSON = "JSON",
 }
 
 export enum ScheduleFrequency {
-  DAILY = 'DAILY',
-  WEEKLY = 'WEEKLY',
-  MONTHLY = 'MONTHLY',
-  QUARTERLY = 'QUARTERLY',
-  YEARLY = 'YEARLY'
+  DAILY = "DAILY",
+  WEEKLY = "WEEKLY",
+  MONTHLY = "MONTHLY",
+  QUARTERLY = "QUARTERLY",
+  YEARLY = "YEARLY",
 }
 
 export class CreateReportDto {

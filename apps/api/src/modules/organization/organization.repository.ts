@@ -1,10 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../../common/prisma/prisma.service';
-import { CreateBranchDto, UpdateBranchDto } from './dto/branch.dto';
-import { CreateDepartmentDto, UpdateDepartmentDto } from './dto/department.dto';
-import { CreateTeamDto, UpdateTeamDto } from './dto/team.dto';
-import { BusinessProfileDto, OrganizationSettingsDto } from './dto/settings.dto';
-import { BaseException } from '../../common/exceptions/base.exception';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { PrismaService } from "../../common/prisma/prisma.service";
+import { CreateBranchDto, UpdateBranchDto } from "./dto/branch.dto";
+import { CreateDepartmentDto, UpdateDepartmentDto } from "./dto/department.dto";
+import { CreateTeamDto, UpdateTeamDto } from "./dto/team.dto";
+import {
+  BusinessProfileDto,
+  OrganizationSettingsDto,
+} from "./dto/settings.dto";
+import { BaseException } from "../../common/exceptions/base.exception";
 
 @Injectable()
 export class OrganizationRepository {
@@ -39,7 +42,9 @@ export class OrganizationRepository {
   // BRANCHES
   // ----------------------------------------------------
   async findBranches(tenantId: string) {
-    return this.prisma.branch.findMany({ where: { tenantId, deletedAt: null } });
+    return this.prisma.branch.findMany({
+      where: { tenantId, deletedAt: null },
+    });
   }
 
   async createBranch(tenantId: string, dto: CreateBranchDto) {
@@ -47,7 +52,7 @@ export class OrganizationRepository {
       where: { tenantId_code: { tenantId, code: dto.code } },
     });
     if (exists && !exists.deletedAt) {
-      throw new BaseException('Branch code already exists', 'ORG-409', 409);
+      throw new BaseException("Branch code already exists", "ORG-409", 409);
     }
     return this.prisma.branch.create({
       data: { ...dto, tenantId },
@@ -72,7 +77,9 @@ export class OrganizationRepository {
   // DEPARTMENTS
   // ----------------------------------------------------
   async findDepartments(tenantId: string) {
-    return this.prisma.department.findMany({ where: { tenantId, deletedAt: null } });
+    return this.prisma.department.findMany({
+      where: { tenantId, deletedAt: null },
+    });
   }
 
   async createDepartment(tenantId: string, dto: CreateDepartmentDto) {
@@ -80,14 +87,18 @@ export class OrganizationRepository {
       where: { tenantId_code: { tenantId, code: dto.code } },
     });
     if (exists && !exists.deletedAt) {
-      throw new BaseException('Department code already exists', 'ORG-409', 409);
+      throw new BaseException("Department code already exists", "ORG-409", 409);
     }
     return this.prisma.department.create({
       data: { ...dto, tenantId },
     });
   }
 
-  async updateDepartment(tenantId: string, departmentId: string, dto: UpdateDepartmentDto) {
+  async updateDepartment(
+    tenantId: string,
+    departmentId: string,
+    dto: UpdateDepartmentDto
+  ) {
     return this.prisma.department.update({
       where: { id: departmentId, tenantId },
       data: dto,
@@ -113,7 +124,7 @@ export class OrganizationRepository {
       where: { tenantId_code: { tenantId, code: dto.code } },
     });
     if (exists && !exists.deletedAt) {
-      throw new BaseException('Team code already exists', 'ORG-409', 409);
+      throw new BaseException("Team code already exists", "ORG-409", 409);
     }
     return this.prisma.team.create({
       data: { ...dto, tenantId },

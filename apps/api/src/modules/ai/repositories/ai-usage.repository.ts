@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../common/prisma/prisma.service';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../../../common/prisma/prisma.service";
 
 @Injectable()
 export class AiUsageRepository {
@@ -18,7 +18,7 @@ export class AiUsageRepository {
     costEst: number;
   }) {
     return this.prisma.aiUsage.create({
-      data
+      data,
     });
   }
 
@@ -31,8 +31,8 @@ export class AiUsageRepository {
         costEst: true,
       },
       _count: {
-        id: true
-      }
+        id: true,
+      },
     });
     return result;
   }

@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../common/prisma/prisma.service';
-import { Notification, Prisma } from '@prisma/client';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../../../common/prisma/prisma.service";
+import { Notification, Prisma } from "@prisma/client";
 
 @Injectable()
 export class NotificationRepository {
@@ -15,33 +15,40 @@ export class NotificationRepository {
       where: { id, tenantId },
       include: {
         recipients: true,
-      }
+      },
     });
   }
 
-  async findMany(tenantId: string, params: {
-    skip?: number;
-    take?: number;
-    where?: Prisma.NotificationWhereInput;
-    orderBy?: Prisma.NotificationOrderByWithRelationInput;
-  }): Promise<[Notification[], number]> {
+  async findMany(
+    tenantId: string,
+    params: {
+      skip?: number;
+      take?: number;
+      where?: Prisma.NotificationWhereInput;
+      orderBy?: Prisma.NotificationOrderByWithRelationInput;
+    }
+  ): Promise<[Notification[], number]> {
     const { skip, take, where, orderBy } = params;
-    
+
     return Promise.all([
       this.prisma.notification.findMany({
         skip,
         take,
         where: { ...where, tenantId },
         orderBy,
-        include: { recipients: true }
+        include: { recipients: true },
       }),
       this.prisma.notification.count({
         where: { ...where, tenantId },
-      })
+      }),
     ]);
   }
 
-  async update(tenantId: string, id: string, data: Prisma.NotificationUpdateInput): Promise<Notification> {
+  async update(
+    tenantId: string,
+    id: string,
+    data: Prisma.NotificationUpdateInput
+  ): Promise<Notification> {
     return this.prisma.notification.update({
       where: { id, tenantId },
       data,

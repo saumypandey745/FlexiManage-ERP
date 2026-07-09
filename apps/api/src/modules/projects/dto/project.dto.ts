@@ -1,6 +1,16 @@
-import { IsString, IsOptional, IsEnum, IsNumber, IsDateString, IsUUID, Min, Max, IsArray } from 'class-validator';
-import { ProjectStatus, ProjectPriority } from '@prisma/client';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsString,
+  IsOptional,
+  IsEnum,
+  IsNumber,
+  IsDateString,
+  IsUUID,
+  Min,
+  Max,
+  IsArray,
+} from "class-validator";
+import { ProjectStatus, ProjectPriority } from "@prisma/client";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class CreateProjectDto {
   @ApiProperty()

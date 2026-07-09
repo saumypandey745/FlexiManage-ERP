@@ -1,6 +1,14 @@
-import { IsString, IsOptional, IsEnum, IsNumber, IsDateString, IsUUID, Min } from 'class-validator';
-import { TaskStatus, TaskPriority, TaskType } from '@prisma/client';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsString,
+  IsOptional,
+  IsEnum,
+  IsNumber,
+  IsDateString,
+  IsUUID,
+  Min,
+} from "class-validator";
+import { TaskStatus, TaskPriority, TaskType } from "@prisma/client";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class CreateTaskDto {
   @ApiProperty()

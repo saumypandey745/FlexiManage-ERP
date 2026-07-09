@@ -1,0 +1,60 @@
+
+> web@0.1.0 build
+> next build
+
+▲ Next.js 16.2.10 (Turbopack)
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 38.7s
+  Finished TypeScript in 9.1s    ✓ Finished TypeScript in 9.1s 
+  Collecting page data using 3 workers in 1118ms    ✓ Collecting page data using 3 workers in 1118ms 
+✓ Generating static pages using 3 workers (40/40) in 1541ms
+  Finalizing page optimization in 43ms    ✓ Finalizing page optimization in 43ms 
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /ai
+├ ○ /ai/history
+├ ○ /ai/templates
+├ ○ /crm
+├ ○ /crm/contacts
+├ ○ /crm/customers
+├ ƒ /crm/customers/[id]
+├ ○ /crm/leads
+├ ƒ /crm/leads/[id]
+├ ○ /crm/opportunities
+├ ƒ /crm/opportunities/[id]
+├ ○ /crm/pipeline
+├ ○ /dashboard
+├ ○ /finance
+├ ○ /finance/expenses
+├ ○ /finance/invoices
+├ ○ /finance/journals
+├ ○ /finance/payments
+├ ○ /hrms
+├ ○ /hrms/attendance
+├ ○ /hrms/employees
+├ ○ /hrms/leaves
+├ ○ /hrms/payroll
+├ ○ /inventory
+├ ○ /inventory/products
+├ ○ /inventory/stock-movements
+├ ○ /inventory/suppliers
+├ ○ /inventory/warehouses
+├ ○ /login
+├ ○ /notifications
+├ ○ /notifications/announcements
+├ ○ /notifications/inbox
+├ ○ /projects
+├ ○ /projects/milestones
+├ ○ /projects/projects
+├ ○ /projects/tasks
+├ ○ /reports
+├ ○ /reports/analytics
+└ ○ /reports/saved
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

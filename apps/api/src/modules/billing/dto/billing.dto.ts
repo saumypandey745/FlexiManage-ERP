@@ -1,5 +1,14 @@
-import { IsString, IsOptional, IsEnum, IsNumber, IsUUID, IsArray, IsObject, Min } from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsString,
+  IsOptional,
+  IsEnum,
+  IsNumber,
+  IsUUID,
+  IsArray,
+  IsObject,
+  Min,
+} from "class-validator";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class CreateSubscriptionDto {
   @ApiProperty()

@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../common/prisma/prisma.service';
-import { CreateOpportunityDto, UpdateOpportunityDto } from '../dto/crm.dto';
-import { OpportunityStage } from '@prisma/client';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../../../common/prisma/prisma.service";
+import { CreateOpportunityDto, UpdateOpportunityDto } from "../dto/crm.dto";
+import { OpportunityStage } from "@prisma/client";
 
 @Injectable()
 export class OpportunityRepository {
@@ -10,7 +10,7 @@ export class OpportunityRepository {
   async findOpportunities(tenantId: string) {
     return this.prisma.opportunity.findMany({
       where: { tenantId, deletedAt: null },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       include: { customer: true, assignedTo: true },
     });
   }
@@ -24,7 +24,11 @@ export class OpportunityRepository {
     return opp;
   }
 
-  async createOpportunity(tenantId: string, dto: CreateOpportunityDto, actionUserId: string) {
+  async createOpportunity(
+    tenantId: string,
+    dto: CreateOpportunityDto,
+    actionUserId: string
+  ) {
     const opp = await this.prisma.opportunity.create({
       data: { ...dto, tenantId },
     });
@@ -40,9 +44,14 @@ export class OpportunityRepository {
     return opp;
   }
 
-  async updateOpportunity(tenantId: string, id: string, dto: UpdateOpportunityDto, actionUserId: string) {
+  async updateOpportunity(
+    tenantId: string,
+    id: string,
+    dto: UpdateOpportunityDto,
+    actionUserId: string
+  ) {
     const existing = await this.findById(tenantId, id);
-    if (!existing) throw new Error('Not found');
+    if (!existing) throw new Error("Not found");
 
     const updated = await this.prisma.opportunity.update({
       where: { id, tenantId },
@@ -63,7 +72,12 @@ export class OpportunityRepository {
     return updated;
   }
 
-  async updateStage(tenantId: string, id: string, stage: OpportunityStage, actionUserId: string) {
+  async updateStage(
+    tenantId: string,
+    id: string,
+    stage: OpportunityStage,
+    actionUserId: string
+  ) {
     return this.updateOpportunity(tenantId, id, { stage }, actionUserId);
   }
 }

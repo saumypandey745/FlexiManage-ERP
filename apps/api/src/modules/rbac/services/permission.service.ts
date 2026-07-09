@@ -1,6 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { RbacRepository } from '../rbac.repository';
-import { CreatePermissionDto, UpdatePermissionDto } from '../dto/permission.dto';
+import { Injectable } from "@nestjs/common";
+import { RbacRepository } from "../rbac.repository";
+import {
+  CreatePermissionDto,
+  UpdatePermissionDto,
+} from "../dto/permission.dto";
 
 @Injectable()
 export class PermissionService {

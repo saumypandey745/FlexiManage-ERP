@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../common/prisma/prisma.service';
-import { CreateInvoiceDto } from '../dto/finance.dto';
-import { BaseException } from '../../../common/exceptions/base.exception';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../../../common/prisma/prisma.service";
+import { CreateInvoiceDto } from "../dto/finance.dto";
+import { BaseException } from "../../../common/exceptions/base.exception";
 
 @Injectable()
 export class InvoiceRepository {
@@ -10,7 +10,7 @@ export class InvoiceRepository {
   async findInvoices(tenantId: string) {
     return this.prisma.invoice.findMany({
       where: { tenantId, deletedAt: null },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       include: { customer: true },
     });
   }
@@ -20,7 +20,8 @@ export class InvoiceRepository {
       where: { id },
       include: { customer: true, lines: true, payments: true },
     });
-    if (!invoice || invoice.tenantId !== tenantId || invoice.deletedAt) return null;
+    if (!invoice || invoice.tenantId !== tenantId || invoice.deletedAt)
+      return null;
     return invoice;
   }
 
@@ -28,12 +29,19 @@ export class InvoiceRepository {
     const existing = await this.prisma.invoice.findFirst({
       where: { tenantId, invoiceNumber: dto.invoiceNumber, deletedAt: null },
     });
-    
+
     if (existing) {
-      throw new BaseException('Invoice number already exists', 'FIN-INV-409', 409);
+      throw new BaseException(
+        "Invoice number already exists",
+        "FIN-INV-409",
+        409
+      );
     }
 
-    const total = dto.lines.reduce((acc, line) => acc + (line.quantity * line.unitPrice), 0);
+    const total = dto.lines.reduce(
+      (acc, line) => acc + line.quantity * line.unitPrice,
+      0
+    );
 
     return this.prisma.invoice.create({
       data: {
@@ -45,7 +53,7 @@ export class InvoiceRepository {
         subTotal: total,
         totalAmount: total, // basic implementation, no tax calc yet
         lines: {
-          create: dto.lines.map(l => ({
+          create: dto.lines.map((l) => ({
             description: l.description,
             quantity: l.quantity,
             unitPrice: l.unitPrice,

@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../common/prisma/prisma.service';
-import { CreateCustomerDto, UpdateCustomerDto } from '../dto/crm.dto';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../../../common/prisma/prisma.service";
+import { CreateCustomerDto, UpdateCustomerDto } from "../dto/crm.dto";
 
 @Injectable()
 export class CustomerRepository {
@@ -9,7 +9,7 @@ export class CustomerRepository {
   async findCustomers(tenantId: string) {
     return this.prisma.customer.findMany({
       where: { tenantId, deletedAt: null },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       include: { assignedTo: true, contacts: true, opportunities: true },
     });
   }
@@ -17,9 +17,15 @@ export class CustomerRepository {
   async findById(tenantId: string, id: string) {
     const customer = await this.prisma.customer.findUnique({
       where: { id },
-      include: { assignedTo: true, contacts: true, opportunities: true, notes: true },
+      include: {
+        assignedTo: true,
+        contacts: true,
+        opportunities: true,
+        notes: true,
+      },
     });
-    if (!customer || customer.tenantId !== tenantId || customer.deletedAt) return null;
+    if (!customer || customer.tenantId !== tenantId || customer.deletedAt)
+      return null;
     return customer;
   }
 

@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../common/prisma/prisma.service';
-import { CreateProductDto, UpdateProductDto } from '../dto/inventory.dto';
-import { BaseException } from '../../../common/exceptions/base.exception';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../../../common/prisma/prisma.service";
+import { CreateProductDto, UpdateProductDto } from "../dto/inventory.dto";
+import { BaseException } from "../../../common/exceptions/base.exception";
 
 @Injectable()
 export class ProductRepository {
@@ -10,7 +10,7 @@ export class ProductRepository {
   async findProducts(tenantId: string) {
     return this.prisma.product.findMany({
       where: { tenantId, deletedAt: null },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       include: { category: true, stockItems: true },
     });
   }
@@ -20,7 +20,8 @@ export class ProductRepository {
       where: { id },
       include: { category: true, stockItems: true, variants: true },
     });
-    if (!product || product.tenantId !== tenantId || product.deletedAt) return null;
+    if (!product || product.tenantId !== tenantId || product.deletedAt)
+      return null;
     return product;
   }
 
@@ -28,9 +29,13 @@ export class ProductRepository {
     const existing = await this.prisma.product.findFirst({
       where: { tenantId, sku: dto.sku, deletedAt: null },
     });
-    
+
     if (existing) {
-      throw new BaseException('Product with this SKU already exists', 'INV-PROD-409', 409);
+      throw new BaseException(
+        "Product with this SKU already exists",
+        "INV-PROD-409",
+        409
+      );
     }
 
     return this.prisma.product.create({

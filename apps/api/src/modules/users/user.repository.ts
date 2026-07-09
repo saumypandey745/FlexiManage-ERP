@@ -1,8 +1,13 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../common/prisma/prisma.service';
-import { CreateUserDto, UpdateUserDto, UpdateProfileDto, UpdatePreferencesDto } from './dto/user.dto';
-import { UserStatus } from '@prisma/client';
-import { BaseException } from '../../common/exceptions/base.exception';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../../common/prisma/prisma.service";
+import {
+  CreateUserDto,
+  UpdateUserDto,
+  UpdateProfileDto,
+  UpdatePreferencesDto,
+} from "./dto/user.dto";
+import { UserStatus } from "@prisma/client";
+import { BaseException } from "../../common/exceptions/base.exception";
 
 @Injectable()
 export class UserRepository {
@@ -11,14 +16,22 @@ export class UserRepository {
   async findUsers(tenantId: string) {
     return this.prisma.user.findMany({
       where: { tenantId, deletedAt: null },
-      include: { profile: true, preference: true, roles: { include: { role: true } } },
+      include: {
+        profile: true,
+        preference: true,
+        roles: { include: { role: true } },
+      },
     });
   }
 
   async findById(tenantId: string, id: string) {
     return this.prisma.user.findUnique({
       where: { id },
-      include: { profile: true, preference: true, roles: { include: { role: true } } },
+      include: {
+        profile: true,
+        preference: true,
+        roles: { include: { role: true } },
+      },
     });
   }
 
@@ -31,7 +44,7 @@ export class UserRepository {
   async createUser(tenantId: string, dto: CreateUserDto) {
     const exists = await this.findByEmail(tenantId, dto.email);
     if (exists) {
-      throw new BaseException('Email already in use', 'USER-409', 409);
+      throw new BaseException("Email already in use", "USER-409", 409);
     }
 
     return this.prisma.user.create({
@@ -75,7 +88,11 @@ export class UserRepository {
     });
   }
 
-  async updatePreferences(tenantId: string, userId: string, dto: UpdatePreferencesDto) {
+  async updatePreferences(
+    tenantId: string,
+    userId: string,
+    dto: UpdatePreferencesDto
+  ) {
     return this.prisma.userPreference.upsert({
       where: { userId },
       create: { ...dto, userId },

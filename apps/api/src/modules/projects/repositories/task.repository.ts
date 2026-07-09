@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../common/prisma/prisma.service';
-import { Task, Prisma } from '@prisma/client';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../../../common/prisma/prisma.service";
+import { Task, Prisma } from "@prisma/client";
 
 @Injectable()
 export class TaskRepository {
@@ -16,14 +16,17 @@ export class TaskRepository {
     });
   }
 
-  async findMany(tenantId: string, params: {
-    skip?: number;
-    take?: number;
-    where?: Prisma.TaskWhereInput;
-    orderBy?: Prisma.TaskOrderByWithRelationInput;
-  }): Promise<[Task[], number]> {
+  async findMany(
+    tenantId: string,
+    params: {
+      skip?: number;
+      take?: number;
+      where?: Prisma.TaskWhereInput;
+      orderBy?: Prisma.TaskOrderByWithRelationInput;
+    }
+  ): Promise<[Task[], number]> {
     const { skip, take, where, orderBy } = params;
-    
+
     return Promise.all([
       this.prisma.task.findMany({
         skip,
@@ -33,11 +36,15 @@ export class TaskRepository {
       }),
       this.prisma.task.count({
         where: { ...where, tenantId },
-      })
+      }),
     ]);
   }
 
-  async update(tenantId: string, id: string, data: Prisma.TaskUpdateInput): Promise<Task> {
+  async update(
+    tenantId: string,
+    id: string,
+    data: Prisma.TaskUpdateInput
+  ): Promise<Task> {
     return this.prisma.task.update({
       where: { id, tenantId },
       data,

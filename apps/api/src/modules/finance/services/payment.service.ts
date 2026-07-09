@@ -1,13 +1,13 @@
-import { Injectable } from '@nestjs/common';
-import { PaymentRepository } from '../repositories/payment.repository';
-import { CreatePaymentDto } from '../dto/finance.dto';
-import { PrismaService } from '../../../common/prisma/prisma.service';
+import { Injectable } from "@nestjs/common";
+import { PaymentRepository } from "../repositories/payment.repository";
+import { CreatePaymentDto } from "../dto/finance.dto";
+import { PrismaService } from "../../../common/prisma/prisma.service";
 
 @Injectable()
 export class PaymentService {
   constructor(
     private readonly repository: PaymentRepository,
-    private readonly prisma: PrismaService,
+    private readonly prisma: PrismaService
   ) {}
 
   async findAll(tenantId: string) {
@@ -21,8 +21,8 @@ export class PaymentService {
       data: {
         tenantId,
         userId: actionUserId,
-        action: 'CREATE',
-        entityName: 'Payment',
+        action: "CREATE",
+        entityName: "Payment",
         entityId: payment.id,
         newValues: { amount: dto.amount, invoiceId: dto.invoiceId },
       },

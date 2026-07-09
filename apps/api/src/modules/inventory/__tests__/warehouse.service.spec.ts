@@ -1,10 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { WarehouseService } from '../services/warehouse.service';
-import { WarehouseRepository } from '../repositories/warehouse.repository';
-import { PrismaService } from '../../../common/prisma/prisma.service';
-import { BaseException } from '../../../common/exceptions/base.exception';
+import { Test, TestingModule } from "@nestjs/testing";
+import { WarehouseService } from "../services/warehouse.service";
+import { WarehouseRepository } from "../repositories/warehouse.repository";
+import { PrismaService } from "../../../common/prisma/prisma.service";
+import { BaseException } from "../../../common/exceptions/base.exception";
 
-describe('WarehouseService', () => {
+describe("WarehouseService", () => {
   let service: WarehouseService;
   let repo: any;
   let prisma: any;
@@ -35,21 +35,21 @@ describe('WarehouseService', () => {
     service = module.get<WarehouseService>(WarehouseService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  describe('findAll', () => {
-    it('should return warehouses', async () => {
+  describe("findAll", () => {
+    it("should return warehouses", async () => {
       repo.findWarehouses.mockResolvedValue([]);
-      expect(await service.findAll('t1')).toEqual([]);
+      expect(await service.findAll("t1")).toEqual([]);
     });
   });
 
-  describe('findOne', () => {
-    it('should throw if not found', async () => {
+  describe("findOne", () => {
+    it("should throw if not found", async () => {
       repo.findById.mockResolvedValue(null);
-      await expect(service.findOne('t1', 'w1')).rejects.toThrow(BaseException);
+      await expect(service.findOne("t1", "w1")).rejects.toThrow(BaseException);
     });
   });
 });

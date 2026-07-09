@@ -1,13 +1,13 @@
-import { Injectable } from '@nestjs/common';
-import { OrganizationRepository } from '../organization.repository';
-import { CreateTeamDto, UpdateTeamDto } from '../dto/team.dto';
-import { PrismaService } from '../../../common/prisma/prisma.service';
+import { Injectable } from "@nestjs/common";
+import { OrganizationRepository } from "../organization.repository";
+import { CreateTeamDto, UpdateTeamDto } from "../dto/team.dto";
+import { PrismaService } from "../../../common/prisma/prisma.service";
 
 @Injectable()
 export class TeamService {
   constructor(
     private readonly repo: OrganizationRepository,
-    private readonly prisma: PrismaService,
+    private readonly prisma: PrismaService
   ) {}
 
   async getTeams(tenantId: string) {
@@ -16,13 +16,13 @@ export class TeamService {
 
   async createTeam(tenantId: string, userId: string, dto: CreateTeamDto) {
     const team = await this.repo.createTeam(tenantId, dto);
-    
+
     await this.prisma.auditLog.create({
       data: {
         tenantId,
         userId,
-        action: 'CREATE',
-        entityName: 'Team',
+        action: "CREATE",
+        entityName: "Team",
         entityId: team.id,
         newValues: dto as any,
       },
@@ -31,15 +31,20 @@ export class TeamService {
     return team;
   }
 
-  async updateTeam(tenantId: string, teamId: string, userId: string, dto: UpdateTeamDto) {
+  async updateTeam(
+    tenantId: string,
+    teamId: string,
+    userId: string,
+    dto: UpdateTeamDto
+  ) {
     const team = await this.repo.updateTeam(tenantId, teamId, dto);
-    
+
     await this.prisma.auditLog.create({
       data: {
         tenantId,
         userId,
-        action: 'UPDATE',
-        entityName: 'Team',
+        action: "UPDATE",
+        entityName: "Team",
         entityId: team.id,
         newValues: dto as any,
       },
@@ -50,13 +55,13 @@ export class TeamService {
 
   async deleteTeam(tenantId: string, teamId: string, userId: string) {
     const team = await this.repo.deleteTeam(tenantId, teamId);
-    
+
     await this.prisma.auditLog.create({
       data: {
         tenantId,
         userId,
-        action: 'DELETE',
-        entityName: 'Team',
+        action: "DELETE",
+        entityName: "Team",
         entityId: team.id,
       },
     });

@@ -1,13 +1,21 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../common/prisma/prisma.service';
-import { Prisma, Dashboard, DashboardWidget } from '@prisma/client';
-import { CreateDashboardDto, UpdateDashboardDto, WidgetDto } from '../dto/dashboard.dto';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../../../common/prisma/prisma.service";
+import { Prisma, Dashboard, DashboardWidget } from "@prisma/client";
+import {
+  CreateDashboardDto,
+  UpdateDashboardDto,
+  WidgetDto,
+} from "../dto/dashboard.dto";
 
 @Injectable()
 export class DashboardRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(tenantId: string, userId: string, dto: CreateDashboardDto): Promise<Dashboard> {
+  async create(
+    tenantId: string,
+    userId: string,
+    dto: CreateDashboardDto
+  ): Promise<Dashboard> {
     return this.prisma.dashboard.create({
       data: {
         tenantId,
@@ -20,14 +28,17 @@ export class DashboardRepository {
     });
   }
 
-  async findMany(tenantId: string, params: { skip?: number; take?: number }): Promise<[Dashboard[], number]> {
+  async findMany(
+    tenantId: string,
+    params: { skip?: number; take?: number }
+  ): Promise<[Dashboard[], number]> {
     const { skip, take } = params;
     return Promise.all([
       this.prisma.dashboard.findMany({
         skip,
         take,
         where: { tenantId, deletedAt: null },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
       }),
       this.prisma.dashboard.count({
         where: { tenantId, deletedAt: null },
@@ -40,11 +51,15 @@ export class DashboardRepository {
       where: { id, tenantId, deletedAt: null },
       include: {
         widgets: true,
-      }
+      },
     });
   }
 
-  async update(tenantId: string, id: string, dto: UpdateDashboardDto): Promise<Dashboard> {
+  async update(
+    tenantId: string,
+    id: string,
+    dto: UpdateDashboardDto
+  ): Promise<Dashboard> {
     return this.prisma.dashboard.update({
       where: { id, tenantId },
       data: dto,
@@ -58,7 +73,11 @@ export class DashboardRepository {
     });
   }
 
-  async addWidget(tenantId: string, dashboardId: string, dto: WidgetDto): Promise<DashboardWidget> {
+  async addWidget(
+    tenantId: string,
+    dashboardId: string,
+    dto: WidgetDto
+  ): Promise<DashboardWidget> {
     return this.prisma.dashboardWidget.create({
       data: {
         tenantId,
@@ -71,14 +90,17 @@ export class DashboardRepository {
         width: dto.width || 1,
         height: dto.height || 1,
         dataSource: dto.dataSource,
-        config: dto.config || {}
-      }
+        config: dto.config || {},
+      },
     });
   }
 
-  async removeWidget(tenantId: string, widgetId: string): Promise<DashboardWidget> {
+  async removeWidget(
+    tenantId: string,
+    widgetId: string
+  ): Promise<DashboardWidget> {
     return this.prisma.dashboardWidget.delete({
-      where: { id: widgetId, tenantId }
+      where: { id: widgetId, tenantId },
     });
   }
 }

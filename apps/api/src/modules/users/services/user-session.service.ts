@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { RedisCacheService } from '../../../common/cache/redis.service';
+import { Injectable } from "@nestjs/common";
+import { RedisCacheService } from "../../../common/cache/redis.service";
 
 @Injectable()
 export class UserSessionService {
@@ -11,8 +11,10 @@ export class UserSessionService {
   async trackSession(userId: string, sessionId: string, meta: any) {
     const key = `user_sessions:${userId}`;
     const sessionsStr = await this.redis.get<string>(key);
-    let sessions: Record<string, any> = sessionsStr ? JSON.parse(sessionsStr) : {};
-    
+    const sessions: Record<string, any> = sessionsStr
+      ? JSON.parse(sessionsStr)
+      : {};
+
     sessions[sessionId] = {
       ...meta,
       createdAt: new Date().toISOString(),
@@ -40,10 +42,10 @@ export class UserSessionService {
     const sessionsStr = await this.redis.get<string>(key);
     if (!sessionsStr) return;
 
-    let sessions: Record<string, any> = JSON.parse(sessionsStr);
+    const sessions: Record<string, any> = JSON.parse(sessionsStr);
     delete sessions[sessionId];
 
-    // In a real implementation, you would also add this sessionId to a blacklist 
+    // In a real implementation, you would also add this sessionId to a blacklist
     // so the token cannot be used anymore.
     await this.redis.set(key, JSON.stringify(sessions), 24 * 60 * 60);
   }

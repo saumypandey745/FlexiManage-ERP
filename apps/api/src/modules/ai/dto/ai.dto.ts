@@ -1,19 +1,27 @@
-import { IsString, IsOptional, IsEnum, IsBoolean, IsObject, IsArray, IsUUID } from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsString,
+  IsOptional,
+  IsEnum,
+  IsBoolean,
+  IsObject,
+  IsArray,
+  IsUUID,
+} from "class-validator";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export enum AiProviderCode {
-  OPENAI = 'OPENAI',
-  ANTHROPIC = 'ANTHROPIC',
-  GEMINI = 'GEMINI',
-  AZURE = 'AZURE',
-  OLLAMA = 'OLLAMA',
-  OPENROUTER = 'OPENROUTER',
-  DEEPSEEK = 'DEEPSEEK',
+  OPENAI = "OPENAI",
+  ANTHROPIC = "ANTHROPIC",
+  GEMINI = "GEMINI",
+  AZURE = "AZURE",
+  OLLAMA = "OLLAMA",
+  OPENROUTER = "OPENROUTER",
+  DEEPSEEK = "DEEPSEEK",
 }
 
 export enum AiConversationStatus {
-  ACTIVE = 'ACTIVE',
-  ARCHIVED = 'ARCHIVED',
+  ACTIVE = "ACTIVE",
+  ARCHIVED = "ARCHIVED",
 }
 
 export class ChatRequestDto {
@@ -35,7 +43,7 @@ export class ChatRequestDto {
   @IsObject()
   @IsOptional()
   context?: Record<string, any>;
-  
+
   @ApiPropertyOptional()
   @IsBoolean()
   @IsOptional()
@@ -94,7 +102,7 @@ export class EmbedDocumentDto {
   @IsString()
   @IsOptional()
   sourceId?: string;
-  
+
   @ApiPropertyOptional()
   @IsObject()
   @IsOptional()

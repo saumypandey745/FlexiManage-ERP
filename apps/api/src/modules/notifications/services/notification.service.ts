@@ -1,13 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { NotificationRepository } from '../repositories/notification.repository';
-import { CreateNotificationDto } from '../dto/notification.dto';
-import { PrismaService } from '../../../common/prisma/prisma.service';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { NotificationRepository } from "../repositories/notification.repository";
+import { CreateNotificationDto } from "../dto/notification.dto";
+import { PrismaService } from "../../../common/prisma/prisma.service";
 
 @Injectable()
 export class NotificationService {
   constructor(
     private readonly notificationRepository: NotificationRepository,
-    private readonly prisma: PrismaService,
+    private readonly prisma: PrismaService
   ) {}
 
   async create(tenantId: string, senderId: string, dto: CreateNotificationDto) {
@@ -19,14 +19,14 @@ export class NotificationService {
       data: dto.data ? (dto.data as any) : undefined,
       sender: { connect: { id: senderId } },
       recipients: {
-        create: dto.recipientIds.flatMap(userId => 
-          dto.channels.map(channel => ({
+        create: dto.recipientIds.flatMap((userId) =>
+          dto.channels.map((channel) => ({
             user: { connect: { id: userId } },
             channel,
-            status: 'PENDING'
+            status: "PENDING",
           }))
-        )
-      }
+        ),
+      },
     });
 
     // TODO: Publish event to trigger Queue workers (BullMQ) based on channel
@@ -36,7 +36,10 @@ export class NotificationService {
 
   async findAll(tenantId: string, page = 1, limit = 10) {
     const skip = (page - 1) * limit;
-    const [data, total] = await this.notificationRepository.findMany(tenantId, { skip, take: limit });
+    const [data, total] = await this.notificationRepository.findMany(tenantId, {
+      skip,
+      take: limit,
+    });
     return { data, total, page, limit };
   }
 
@@ -45,15 +48,16 @@ export class NotificationService {
       where: {
         notificationId,
         userId,
-        notification: { tenantId }
-      }
+        notification: { tenantId },
+      },
     });
 
-    if (!recipient) throw new NotFoundException('Notification recipient not found');
+    if (!recipient)
+      throw new NotFoundException("Notification recipient not found");
 
     return this.prisma.notificationRecipient.update({
       where: { id: recipient.id },
-      data: { isRead: true, readAt: new Date() }
+      data: { isRead: true, readAt: new Date() },
     });
   }
 }

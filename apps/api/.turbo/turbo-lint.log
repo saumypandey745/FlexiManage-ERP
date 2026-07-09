@@ -1,0 +1,213 @@
+
+> fleximanage-api@1.0.0 lint
+> eslint "{src,apps,libs,test}/**/*.ts" --fix
+
+=============
+
+WARNING: You are currently running a version of TypeScript which is not officially supported by @typescript-eslint/typescript-estree.
+
+You may find that it works just fine, or you may not.
+
+SUPPORTED TYPESCRIPT VERSIONS: >=3.3.1 <5.2.0
+
+YOUR TYPESCRIPT VERSION: 5.9.3
+
+Please only submit bug reports when using the officially supported version.
+
+=============
+
+/home/saumy/FlexiManage ERP/apps/api/src/app.module.ts
+  1:1   error    Do not use "@ts-nocheck" because it alters compilation errors  @typescript-eslint/ban-ts-comment
+  5:10  warning  'LoggerModule' is defined but never used                       @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/common/logger/logger.module.ts
+  8:23  warning  'req' is defined but never used  @typescript-eslint/no-unused-vars
+  8:28  warning  'res' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/common/prisma/tenant.middleware.ts
+  1:38  warning  'ForbiddenException' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/main.ts
+  1:1  error  Do not use "@ts-nocheck" because it alters compilation errors  @typescript-eslint/ban-ts-comment
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/ai/dto/ai.dto.ts
+  4:3  warning  'IsEnum' is defined but never used   @typescript-eslint/no-unused-vars
+  7:3  warning  'IsArray' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/ai/providers/ai-gateway.service.ts
+  9:15  warning  'providerCode' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/ai/repositories/ai-conversation.repository.ts
+  3:10  warning  'Prisma' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/auth/strategies/jwt.strategy.ts
+  1:22  warning  'UnauthorizedException' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/billing/dto/billing.dto.ts
+  4:3  warning  'IsEnum' is defined but never used    @typescript-eslint/no-unused-vars
+  7:3  warning  'IsArray' is defined but never used   @typescript-eslint/no-unused-vars
+  8:3  warning  'IsObject' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/billing/repositories/billing.repository.ts
+  1:1  error  Do not use "@ts-nocheck" because it alters compilation errors  @typescript-eslint/ban-ts-comment
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/billing/services/billing.service.ts
+  95:20  warning  'tenantId' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/billing/services/webhook.service.ts
+  10:29  warning  'payload' is defined but never used    @typescript-eslint/no-unused-vars
+  10:43  warning  'signature' is defined but never used  @typescript-eslint/no-unused-vars
+  16:29  warning  'payload' is defined but never used    @typescript-eslint/no-unused-vars
+  16:43  warning  'signature' is defined but never used  @typescript-eslint/no-unused-vars
+  21:31  warning  'payload' is defined but never used    @typescript-eslint/no-unused-vars
+  21:45  warning  'signature' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/crm/controllers/lead.controller.ts
+  17:10  warning  'LeadStatus' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/crm/services/lead.service.ts
+  4:10  warning  'LeadStatus' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/documents/controllers/document.controller.ts
+  14:3  warning  'Res' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/documents/controllers/folder.controller.ts
+  12:3   warning  'UseInterceptors' is defined but never used  @typescript-eslint/no-unused-vars
+  13:3   warning  'UploadedFile' is defined but never used     @typescript-eslint/no-unused-vars
+  15:10  warning  'FileInterceptor' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/documents/dto/documents.dto.ts
+  5:3  warning  'IsBoolean' is defined but never used  @typescript-eslint/no-unused-vars
+  7:3  warning  'IsNumber' is defined but never used   @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/documents/providers/cloudinary.provider.ts
+  25:5   warning  'mimeType' is defined but never used  @typescript-eslint/no-unused-vars
+  45:22  warning  'key' is defined but never used       @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/documents/providers/local-storage.provider.ts
+   5:16  warning  'uuidv4' is defined but never used    @typescript-eslint/no-unused-vars
+  21:5   warning  'mimeType' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/finance/dto/finance.dto.ts
+   1:23  warning  'PartialType' is defined but never used    @typescript-eslint/no-unused-vars
+   6:3   warning  'IsEnum' is defined but never used         @typescript-eslint/no-unused-vars
+  14:10  warning  'PaymentStatus' is defined but never used  @typescript-eslint/no-unused-vars
+  14:25  warning  'ExpenseStatus' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/hrms/dto/hrms.dto.ts
+  10:3  warning  'IsBoolean' is defined but never used         @typescript-eslint/no-unused-vars
+  11:3  warning  'ValidateNested' is defined but never used    @typescript-eslint/no-unused-vars
+  15:3  warning  'AttendanceStatus' is defined but never used  @typescript-eslint/no-unused-vars
+  17:3  warning  'PayrollStatus' is defined but never used     @typescript-eslint/no-unused-vars
+  18:3  warning  'CandidateStatus' is defined but never used   @typescript-eslint/no-unused-vars
+  19:3  warning  'ShiftType' is defined but never used         @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/integrations/dto/integration.dto.ts
+  4:3  warning  'IsEnum' is defined but never used     @typescript-eslint/no-unused-vars
+  5:3  warning  'IsBoolean' is defined but never used  @typescript-eslint/no-unused-vars
+  6:3  warning  'IsUUID' is defined but never used     @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/integrations/services/integration.service.ts
+   4:3   warning  'BadRequestException' is defined but never used   @typescript-eslint/no-unused-vars
+  35:13  warning  'credentials' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/integrations/services/webhook.service.ts
+   3:13  warning  'crypto' is defined but never used     @typescript-eslint/no-unused-vars
+  13:5   warning  'payload' is defined but never used    @typescript-eslint/no-unused-vars
+  14:5   warning  'signature' is defined but never used  @typescript-eslint/no-unused-vars
+  27:24  warning  'tenantId' is defined but never used   @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/inventory/__tests__/purchase-order.service.spec.ts
+  5:10  warning  'BaseException' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/inventory/dto/inventory.dto.ts
+  11:41  warning  'POStatus' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/inventory/repositories/purchase-order.repository.ts
+  7:20  warning  'MovementType' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/inventory/services/purchase-order.service.ts
+  50:11  warning  'po' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/inventory/services/stock.service.ts
+  5:10  warning  'MovementType' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/notifications/dto/notification.dto.ts
+  6:3  warning  'IsBoolean' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/organization/__tests__/organization.service.spec.ts
+  44:8   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  56:14  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  64:8   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  77:14  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/organization/dto/settings.dto.ts
+  1:23  warning  'PartialType' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/organization/organization.repository.ts
+  1:22  warning  'NotFoundException' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/projects/dto/project.dto.ts
+  8:3  warning  'Min' is defined but never used  @typescript-eslint/no-unused-vars
+  9:3  warning  'Max' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/projects/services/project.service.ts
+   90:11  warning  'project' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  117:11  warning  'project' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/rbac/__tests__/rbac.service.spec.ts
+  43:6   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  51:12  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  57:6   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  58:6   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  76:12  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/rbac/dto/role.dto.ts
+  2:22  warning  'IsOptional' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/rbac/services/authorization.service.ts
+  24:20  warning  'reqAct' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/reports/dto/dashboard.dto.ts
+  8:3  warning  'IsArray' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/reports/dto/report.dto.ts
+  5:3  warning  'IsUUID' is defined but never used     @typescript-eslint/no-unused-vars
+  6:3  warning  'IsBoolean' is defined but never used  @typescript-eslint/no-unused-vars
+  8:3  warning  'IsNumber' is defined but never used   @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/reports/repositories/dashboard.repository.ts
+  3:10  warning  'Prisma' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/reports/services/report.service.ts
+  93:5  warning  'dto' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/users/__tests__/user.service.spec.ts
+  40:6   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  49:12  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  55:6   warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+  70:12  warning  Forbidden non-null assertion  @typescript-eslint/no-non-null-assertion
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/users/user.controller.ts
+  140:13  warning  '_dto' is defined but never used  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/workflow/dto/workflow.dto.ts
+  5:3  warning  'IsBoolean' is defined but never used  @typescript-eslint/no-unused-vars
+  7:3  warning  'IsArray' is defined but never used    @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/src/modules/workflow/repositories/workflow.repository.ts
+  1:1   error    Do not use "@ts-nocheck" because it alters compilation errors  @typescript-eslint/ban-ts-comment
+  2:22  warning  'NotFoundException' is defined but never used                  @typescript-eslint/no-unused-vars
+
+/home/saumy/FlexiManage ERP/apps/api/test/organization/organization.e2e-spec.ts
+  24:43  warning  'context' is defined but never used  @typescript-eslint/no-unused-vars
+
+✖ 92 problems (4 errors, 88 warnings)
+
+[1mnpm[22m [31merror[39m Lifecycle script `lint` failed with error:
+[1mnpm[22m [31merror[39m [94mcode[39m [33m1[39m
+[1mnpm[22m [31merror[39m [94mpath[39m /home/saumy/FlexiManage ERP/apps/api
+[1mnpm[22m [31merror[39m [94mworkspace[39m fleximanage-api@1.0.0
+[1mnpm[22m [31merror[39m [94mlocation[39m /home/saumy/FlexiManage ERP/apps/api
+[1mnpm[22m [31merror[39m command failed
+[1mnpm[22m [31merror[39m [94mcommand[39m sh -c eslint "{src,apps,libs,test}/**/*.ts" --fix

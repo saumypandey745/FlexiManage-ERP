@@ -1,10 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { OpportunityService } from '../services/opportunity.service';
-import { OpportunityRepository } from '../repositories/opportunity.repository';
-import { PrismaService } from '../../../common/prisma/prisma.service';
-import { OpportunityStage } from '@prisma/client';
+import { Test, TestingModule } from "@nestjs/testing";
+import { OpportunityService } from "../services/opportunity.service";
+import { OpportunityRepository } from "../repositories/opportunity.repository";
+import { PrismaService } from "../../../common/prisma/prisma.service";
+import { OpportunityStage } from "@prisma/client";
 
-describe('OpportunityService', () => {
+describe("OpportunityService", () => {
   let service: OpportunityService;
   let repo: jest.Mocked<OpportunityRepository>;
   let prisma: jest.Mocked<PrismaService>;
@@ -37,20 +37,29 @@ describe('OpportunityService', () => {
     prisma = module.get(PrismaService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  describe('createOpportunity', () => {
-    it('should create an opportunity and audit log', async () => {
-      const dto = { name: 'License', amount: 50000, customerId: 'cust-1' };
-      const createdOpp = { id: 'opp-1', tenantId: 'tenant-1', stage: OpportunityStage.PROSPECTING, ...dto };
-      
+  describe("createOpportunity", () => {
+    it("should create an opportunity and audit log", async () => {
+      const dto = { name: "License", amount: 50000, customerId: "cust-1" };
+      const createdOpp = {
+        id: "opp-1",
+        tenantId: "tenant-1",
+        stage: OpportunityStage.PROSPECTING,
+        ...dto,
+      };
+
       repo.createOpportunity.mockResolvedValue(createdOpp as any);
-      
-      const result = await service.createOpportunity('tenant-1', 'user-1', dto);
-      
-      expect(repo.createOpportunity).toHaveBeenCalledWith('tenant-1', dto, 'user-1');
+
+      const result = await service.createOpportunity("tenant-1", "user-1", dto);
+
+      expect(repo.createOpportunity).toHaveBeenCalledWith(
+        "tenant-1",
+        dto,
+        "user-1"
+      );
       expect(prisma.auditLog.create).toHaveBeenCalled();
       expect(result).toEqual(createdOpp);
     });

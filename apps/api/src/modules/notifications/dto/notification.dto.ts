@@ -1,34 +1,42 @@
-import { IsString, IsOptional, IsEnum, IsUUID, IsBoolean, IsArray, IsObject } from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsString,
+  IsOptional,
+  IsEnum,
+  IsUUID,
+  IsBoolean,
+  IsArray,
+  IsObject,
+} from "class-validator";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export enum NotificationType {
-  SYSTEM = 'SYSTEM',
-  ALERT = 'ALERT',
-  REMINDER = 'REMINDER',
-  MESSAGE = 'MESSAGE',
-  ANNOUNCEMENT = 'ANNOUNCEMENT'
+  SYSTEM = "SYSTEM",
+  ALERT = "ALERT",
+  REMINDER = "REMINDER",
+  MESSAGE = "MESSAGE",
+  ANNOUNCEMENT = "ANNOUNCEMENT",
 }
 
 export enum NotificationChannel {
-  EMAIL = 'EMAIL',
-  SMS = 'SMS',
-  PUSH = 'PUSH',
-  IN_APP = 'IN_APP',
-  WEBHOOK = 'WEBHOOK'
+  EMAIL = "EMAIL",
+  SMS = "SMS",
+  PUSH = "PUSH",
+  IN_APP = "IN_APP",
+  WEBHOOK = "WEBHOOK",
 }
 
 export enum AnnouncementPriority {
-  LOW = 'LOW',
-  NORMAL = 'NORMAL',
-  HIGH = 'HIGH',
-  URGENT = 'URGENT'
+  LOW = "LOW",
+  NORMAL = "NORMAL",
+  HIGH = "HIGH",
+  URGENT = "URGENT",
 }
 
 export enum RecipientType {
-  USER = 'USER',
-  ROLE = 'ROLE',
-  DEPARTMENT = 'DEPARTMENT',
-  ALL = 'ALL'
+  USER = "USER",
+  ROLE = "ROLE",
+  DEPARTMENT = "DEPARTMENT",
+  ALL = "ALL",
 }
 
 export class CreateNotificationDto {
@@ -51,7 +59,7 @@ export class CreateNotificationDto {
 
   @ApiProperty()
   @IsArray()
-  @IsUUID('4', { each: true })
+  @IsUUID("4", { each: true })
   recipientIds: string[];
 
   @ApiProperty({ enum: NotificationChannel, isArray: true })
@@ -123,7 +131,7 @@ export class CreateAnnouncementDto {
 
   @ApiPropertyOptional()
   @IsArray()
-  @IsUUID('4', { each: true })
+  @IsUUID("4", { each: true })
   @IsOptional()
   recipientIds?: string[];
 }

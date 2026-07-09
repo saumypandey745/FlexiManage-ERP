@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../common/prisma/prisma.service';
-import { CreateExpenseDto } from '../dto/finance.dto';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../../../common/prisma/prisma.service";
+import { CreateExpenseDto } from "../dto/finance.dto";
 
 @Injectable()
 export class ExpenseRepository {
@@ -9,7 +9,7 @@ export class ExpenseRepository {
   async findExpenses(tenantId: string) {
     return this.prisma.expenseClaim.findMany({
       where: { tenantId },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       include: { category: true, user: true },
     });
   }

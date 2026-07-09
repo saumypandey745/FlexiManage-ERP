@@ -1,14 +1,14 @@
-import { Injectable } from '@nestjs/common';
-import { LeadRepository } from '../repositories/lead.repository';
-import { CreateLeadDto, UpdateLeadDto } from '../dto/crm.dto';
-import { LeadStatus } from '@prisma/client';
-import { PrismaService } from '../../../common/prisma/prisma.service';
+import { Injectable } from "@nestjs/common";
+import { LeadRepository } from "../repositories/lead.repository";
+import { CreateLeadDto, UpdateLeadDto } from "../dto/crm.dto";
+import { LeadStatus } from "@prisma/client";
+import { PrismaService } from "../../../common/prisma/prisma.service";
 
 @Injectable()
 export class LeadService {
   constructor(
     private readonly repo: LeadRepository,
-    private readonly prisma: PrismaService,
+    private readonly prisma: PrismaService
   ) {}
 
   async getLeads(tenantId: string) {
@@ -21,13 +21,13 @@ export class LeadService {
 
   async createLead(tenantId: string, actionUserId: string, dto: CreateLeadDto) {
     const lead = await this.repo.createLead(tenantId, dto);
-    
+
     await this.prisma.auditLog.create({
       data: {
         tenantId,
         userId: actionUserId,
-        action: 'CREATE',
-        entityName: 'Lead',
+        action: "CREATE",
+        entityName: "Lead",
         entityId: lead.id,
         newValues: dto as any,
       },
@@ -36,15 +36,20 @@ export class LeadService {
     return lead;
   }
 
-  async updateLead(tenantId: string, id: string, actionUserId: string, dto: UpdateLeadDto) {
+  async updateLead(
+    tenantId: string,
+    id: string,
+    actionUserId: string,
+    dto: UpdateLeadDto
+  ) {
     const lead = await this.repo.updateLead(tenantId, id, dto);
-    
+
     await this.prisma.auditLog.create({
       data: {
         tenantId,
         userId: actionUserId,
-        action: 'UPDATE',
-        entityName: 'Lead',
+        action: "UPDATE",
+        entityName: "Lead",
         entityId: lead.id,
         newValues: dto as any,
       },
@@ -55,13 +60,13 @@ export class LeadService {
 
   async deleteLead(tenantId: string, id: string, actionUserId: string) {
     const lead = await this.repo.deleteLead(tenantId, id);
-    
+
     await this.prisma.auditLog.create({
       data: {
         tenantId,
         userId: actionUserId,
-        action: 'DELETE',
-        entityName: 'Lead',
+        action: "DELETE",
+        entityName: "Lead",
         entityId: lead.id,
       },
     });

@@ -1,14 +1,14 @@
-import { Injectable } from '@nestjs/common';
-import { OpportunityRepository } from '../repositories/opportunity.repository';
-import { CreateOpportunityDto, UpdateOpportunityDto } from '../dto/crm.dto';
-import { OpportunityStage } from '@prisma/client';
-import { PrismaService } from '../../../common/prisma/prisma.service';
+import { Injectable } from "@nestjs/common";
+import { OpportunityRepository } from "../repositories/opportunity.repository";
+import { CreateOpportunityDto, UpdateOpportunityDto } from "../dto/crm.dto";
+import { OpportunityStage } from "@prisma/client";
+import { PrismaService } from "../../../common/prisma/prisma.service";
 
 @Injectable()
 export class OpportunityService {
   constructor(
     private readonly repo: OpportunityRepository,
-    private readonly prisma: PrismaService,
+    private readonly prisma: PrismaService
   ) {}
 
   async getOpportunities(tenantId: string) {
@@ -19,15 +19,19 @@ export class OpportunityService {
     return this.repo.findById(tenantId, id);
   }
 
-  async createOpportunity(tenantId: string, actionUserId: string, dto: CreateOpportunityDto) {
+  async createOpportunity(
+    tenantId: string,
+    actionUserId: string,
+    dto: CreateOpportunityDto
+  ) {
     const opp = await this.repo.createOpportunity(tenantId, dto, actionUserId);
-    
+
     await this.prisma.auditLog.create({
       data: {
         tenantId,
         userId: actionUserId,
-        action: 'CREATE',
-        entityName: 'Opportunity',
+        action: "CREATE",
+        entityName: "Opportunity",
         entityId: opp.id,
         newValues: dto as any,
       },
@@ -36,15 +40,25 @@ export class OpportunityService {
     return opp;
   }
 
-  async updateOpportunity(tenantId: string, id: string, actionUserId: string, dto: UpdateOpportunityDto) {
-    const opp = await this.repo.updateOpportunity(tenantId, id, dto, actionUserId);
-    
+  async updateOpportunity(
+    tenantId: string,
+    id: string,
+    actionUserId: string,
+    dto: UpdateOpportunityDto
+  ) {
+    const opp = await this.repo.updateOpportunity(
+      tenantId,
+      id,
+      dto,
+      actionUserId
+    );
+
     await this.prisma.auditLog.create({
       data: {
         tenantId,
         userId: actionUserId,
-        action: 'UPDATE',
-        entityName: 'Opportunity',
+        action: "UPDATE",
+        entityName: "Opportunity",
         entityId: opp.id,
         newValues: dto as any,
       },
@@ -53,7 +67,12 @@ export class OpportunityService {
     return opp;
   }
 
-  async setStage(tenantId: string, id: string, actionUserId: string, stage: OpportunityStage) {
+  async setStage(
+    tenantId: string,
+    id: string,
+    actionUserId: string,
+    stage: OpportunityStage
+  ) {
     return this.repo.updateStage(tenantId, id, stage, actionUserId);
   }
 }

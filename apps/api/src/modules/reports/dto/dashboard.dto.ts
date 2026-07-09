@@ -1,21 +1,29 @@
-import { IsString, IsOptional, IsEnum, IsBoolean, IsObject, IsInt, IsArray } from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsString,
+  IsOptional,
+  IsEnum,
+  IsBoolean,
+  IsObject,
+  IsInt,
+  IsArray,
+} from "class-validator";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export enum WidgetType {
-  CHART = 'CHART',
-  TABLE = 'TABLE',
-  KPI_CARD = 'KPI_CARD',
-  MAP = 'MAP',
-  TIMELINE = 'TIMELINE'
+  CHART = "CHART",
+  TABLE = "TABLE",
+  KPI_CARD = "KPI_CARD",
+  MAP = "MAP",
+  TIMELINE = "TIMELINE",
 }
 
 export enum ChartType {
-  BAR = 'BAR',
-  LINE = 'LINE',
-  PIE = 'PIE',
-  DOUGHNUT = 'DOUGHNUT',
-  AREA = 'AREA',
-  SCATTER = 'SCATTER'
+  BAR = "BAR",
+  LINE = "LINE",
+  PIE = "PIE",
+  DOUGHNUT = "DOUGHNUT",
+  AREA = "AREA",
+  SCATTER = "SCATTER",
 }
 
 export class CreateDashboardDto {

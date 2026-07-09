@@ -1,7 +1,17 @@
-import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsOptional, IsEnum, IsNumber, IsUUID, IsDateString, IsArray, ValidateNested } from 'class-validator';
-import { Type } from 'class-transformer';
-import { PaymentStatus, ExpenseStatus } from '@prisma/client';
+import { ApiProperty, PartialType } from "@nestjs/swagger";
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsEnum,
+  IsNumber,
+  IsUUID,
+  IsDateString,
+  IsArray,
+  ValidateNested,
+} from "class-validator";
+import { Type } from "class-transformer";
+import { PaymentStatus, ExpenseStatus } from "@prisma/client";
 
 export class InvoiceLineDto {
   @ApiProperty()

@@ -33,6 +33,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
     socketInstance.on('disconnect', () => setIsConnected(false));
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     setSocket(socketInstance);
 
     return () => {

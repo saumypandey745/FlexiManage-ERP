@@ -19,6 +19,9 @@ export interface AiChatResult {
 
 export interface IAiProvider {
   chat(options: AiChatOptions): Promise<AiChatResult>;
-  streamChat(options: AiChatOptions, onChunk: (chunk: string) => void): Promise<AiChatResult>;
+  streamChat(
+    options: AiChatOptions,
+    onChunk: (chunk: string) => void
+  ): Promise<AiChatResult>;
   embed(text: string): Promise<number[]>;
 }

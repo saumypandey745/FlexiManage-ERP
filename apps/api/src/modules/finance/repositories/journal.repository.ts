@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../common/prisma/prisma.service';
-import { CreateJournalEntryDto } from '../dto/finance.dto';
-import { BaseException } from '../../../common/exceptions/base.exception';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../../../common/prisma/prisma.service";
+import { CreateJournalEntryDto } from "../dto/finance.dto";
+import { BaseException } from "../../../common/exceptions/base.exception";
 
 @Injectable()
 export class JournalRepository {
@@ -10,7 +10,7 @@ export class JournalRepository {
   async findEntries(tenantId: string) {
     return this.prisma.journalEntry.findMany({
       where: { tenantId },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       include: { lines: { include: { account: true } } },
     });
   }
@@ -25,7 +25,7 @@ export class JournalRepository {
     }
 
     if (totalDebit !== totalCredit) {
-      throw new BaseException('Debits must equal Credits', 'FIN-JNL-400', 400);
+      throw new BaseException("Debits must equal Credits", "FIN-JNL-400", 400);
     }
 
     return this.prisma.journalEntry.create({
@@ -35,7 +35,7 @@ export class JournalRepository {
         reference: dto.reference,
         description: dto.description,
         lines: {
-          create: dto.lines.map(l => ({
+          create: dto.lines.map((l) => ({
             accountId: l.accountId,
             debit: l.debit || 0,
             credit: l.credit || 0,

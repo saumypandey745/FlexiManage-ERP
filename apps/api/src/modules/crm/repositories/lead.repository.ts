@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../common/prisma/prisma.service';
-import { CreateLeadDto, UpdateLeadDto } from '../dto/crm.dto';
-import { LeadStatus } from '@prisma/client';
-import { BaseException } from '../../../common/exceptions/base.exception';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../../../common/prisma/prisma.service";
+import { CreateLeadDto, UpdateLeadDto } from "../dto/crm.dto";
+import { LeadStatus } from "@prisma/client";
+import { BaseException } from "../../../common/exceptions/base.exception";
 
 @Injectable()
 export class LeadRepository {
@@ -11,7 +11,7 @@ export class LeadRepository {
   async findLeads(tenantId: string) {
     return this.prisma.lead.findMany({
       where: { tenantId, deletedAt: null },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       include: { assignedTo: true, activities: true, notes: true },
     });
   }
@@ -29,9 +29,13 @@ export class LeadRepository {
     const existing = await this.prisma.lead.findFirst({
       where: { tenantId, email: dto.email, deletedAt: null },
     });
-    
+
     if (existing) {
-      throw new BaseException('Lead with this email already exists', 'CRM-LEAD-409', 409);
+      throw new BaseException(
+        "Lead with this email already exists",
+        "CRM-LEAD-409",
+        409
+      );
     }
 
     return this.prisma.lead.create({

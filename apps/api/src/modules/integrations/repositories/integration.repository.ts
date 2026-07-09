@@ -1,7 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../common/prisma/prisma.service';
-import { EncryptionService } from '../services/encryption.service';
-import { ConnectIntegrationDto, UpdateIntegrationDto, WebhookEndpointDto } from '../dto/integration.dto';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../../../common/prisma/prisma.service";
+import { EncryptionService } from "../services/encryption.service";
+import {
+  ConnectIntegrationDto,
+  UpdateIntegrationDto,
+  WebhookEndpointDto,
+} from "../dto/integration.dto";
 
 @Injectable()
 export class IntegrationRepository {
@@ -19,8 +23,8 @@ export class IntegrationRepository {
           provider: dto.provider,
           category: dto.category,
           name: dto.name,
-          status: 'ACTIVE',
-        }
+          status: "ACTIVE",
+        },
       });
 
       // Save encrypted credentials if provided
@@ -32,8 +36,8 @@ export class IntegrationRepository {
               integrationId: integration.id,
               keyName: key,
               encryptedValue,
-              iv
-            }
+              iv,
+            },
           });
         }
       }
@@ -43,8 +47,8 @@ export class IntegrationRepository {
         await tx.providerConfiguration.create({
           data: {
             integrationId: integration.id,
-            config: dto.configuration
-          }
+            config: dto.configuration,
+          },
         });
       }
 
@@ -55,32 +59,36 @@ export class IntegrationRepository {
   async getIntegrations(tenantId: string) {
     return this.prisma.integration.findMany({
       where: { tenantId, deletedAt: null },
-      include: { configuration: true }
+      include: { configuration: true },
     });
   }
 
   async getIntegration(tenantId: string, id: string) {
     const integration = await this.prisma.integration.findUnique({
       where: { id, tenantId },
-      include: { configuration: true, credentials: true }
+      include: { configuration: true, credentials: true },
     });
-    
+
     // Do not return raw credentials in normal gets, mapping logic handled in service if needed
     return integration;
   }
 
-  async updateIntegration(tenantId: string, id: string, dto: UpdateIntegrationDto) {
+  async updateIntegration(
+    tenantId: string,
+    id: string,
+    dto: UpdateIntegrationDto
+  ) {
     return this.prisma.$transaction(async (tx) => {
       const updated = await tx.integration.update({
         where: { id, tenantId },
-        data: { name: dto.name }
+        data: { name: dto.name },
       });
 
       if (dto.configuration) {
         await tx.providerConfiguration.upsert({
           where: { integrationId: id },
           update: { config: dto.configuration },
-          create: { integrationId: id, config: dto.configuration }
+          create: { integrationId: id, config: dto.configuration },
         });
       }
 
@@ -91,7 +99,7 @@ export class IntegrationRepository {
   async disconnect(tenantId: string, id: string) {
     return this.prisma.integration.update({
       where: { id, tenantId },
-      data: { status: 'INACTIVE', deletedAt: new Date() }
+      data: { status: "INACTIVE", deletedAt: new Date() },
     });
   }
 
@@ -102,25 +110,30 @@ export class IntegrationRepository {
         tenantId,
         url: dto.url,
         secret: dto.secret,
-        events: dto.events
-      }
+        events: dto.events,
+      },
     });
   }
 
   async getWebhookEndpoints(tenantId: string) {
     return this.prisma.hubWebhookEndpoint.findMany({
-      where: { tenantId }
+      where: { tenantId },
     });
   }
 
-  async logAudit(integrationId: string, userId: string, action: string, details?: any) {
+  async logAudit(
+    integrationId: string,
+    userId: string,
+    action: string,
+    details?: any
+  ) {
     return this.prisma.integrationAudit.create({
       data: {
         integrationId,
         userId,
         action,
-        details: details || {}
-      }
+        details: details || {},
+      },
     });
   }
 }

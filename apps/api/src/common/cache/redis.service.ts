@@ -1,6 +1,6 @@
-import { Injectable, OnModuleDestroy, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import Redis from 'ioredis';
+import { Injectable, OnModuleDestroy, Logger } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import Redis from "ioredis";
 
 @Injectable()
 export class RedisCacheService implements OnModuleDestroy {
@@ -8,12 +8,12 @@ export class RedisCacheService implements OnModuleDestroy {
   private readonly logger = new Logger(RedisCacheService.name);
 
   constructor(private configService: ConfigService) {
-    const url = this.configService.get<string>('REDIS_URL');
+    const url = this.configService.get<string>("REDIS_URL");
     if (url) {
       this.client = new Redis(url);
-      this.logger.log('Redis connected successfully.');
+      this.logger.log("Redis connected successfully.");
     } else {
-      this.logger.warn('REDIS_URL not found. Cache disabled.');
+      this.logger.warn("REDIS_URL not found. Cache disabled.");
     }
   }
 
@@ -21,7 +21,7 @@ export class RedisCacheService implements OnModuleDestroy {
     if (!this.client) return;
     const stringValue = JSON.stringify(value);
     if (ttl) {
-      await this.client.set(key, stringValue, 'EX', ttl);
+      await this.client.set(key, stringValue, "EX", ttl);
     } else {
       await this.client.set(key, stringValue);
     }

@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../common/prisma/prisma.service';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../../../common/prisma/prisma.service";
 
 @Injectable()
 export class BillingRepository {
@@ -9,63 +9,81 @@ export class BillingRepository {
   async getPlans() {
     return this.prisma.saaSSubscriptionPlan.findMany({
       where: { isActive: true },
-      include: { features: true, meteredFeatures: true }
+      include: { features: true, meteredFeatures: true },
     });
   }
 
-  async createSubscription(tenantId: string, planId: string, currentPeriodStart: Date, currentPeriodEnd: Date) {
+  async createSubscription(
+    tenantId: string,
+    planId: string,
+    currentPeriodStart: Date,
+    currentPeriodEnd: Date
+  ) {
     return this.prisma.saaSSubscription.create({
       data: {
         tenantId,
         planId,
-        status: 'ACTIVE',
+        status: "ACTIVE",
         currentPeriodStart,
         currentPeriodEnd,
       },
-      include: { plan: true }
+      include: { plan: true },
     });
   }
 
   async getSubscription(tenantId: string) {
     return this.prisma.saaSSubscription.findUnique({
       where: { tenantId },
-      include: { plan: { include: { features: true, meteredFeatures: true } } }
+      include: { plan: { include: { features: true, meteredFeatures: true } } },
     });
   }
 
-  async updateSubscription(tenantId: string, subscriptionId: string, planId: string) {
+  async updateSubscription(
+    tenantId: string,
+    subscriptionId: string,
+    planId: string
+  ) {
     return this.prisma.saaSSubscription.update({
       where: { id: subscriptionId, tenantId },
-      data: { planId }
+      data: { planId },
     });
   }
 
   async cancelSubscription(tenantId: string, subscriptionId: string) {
     return this.prisma.saaSSubscription.update({
       where: { id: subscriptionId, tenantId },
-      data: { cancelAtPeriodEnd: true }
+      data: { cancelAtPeriodEnd: true },
     });
   }
 
-  async logAudit(tenantId: string, userId: string, action: string, details?: any) {
+  async logAudit(
+    tenantId: string,
+    userId: string,
+    action: string,
+    details?: any
+  ) {
     return this.prisma.saaSBillingAudit.create({
       data: {
         tenantId,
         userId,
         action,
-        details: details || {}
-      }
+        details: details || {},
+      },
     });
   }
 
-  async createInvoice(tenantId: string, subscriptionId: string, amount: number) {
+  async createInvoice(
+    tenantId: string,
+    subscriptionId: string,
+    amount: number
+  ) {
     return this.prisma.saaSInvoice.create({
       data: {
         tenantId,
         subscriptionId,
         amount,
-        status: 'DRAFT',
-      }
+        status: "DRAFT",
+      },
     });
   }
 
@@ -73,20 +91,20 @@ export class BillingRepository {
     return this.prisma.saaSInvoice.findMany({
       where: { tenantId },
       include: { items: true, transactions: true },
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: "desc" },
     });
   }
 
   async getInvoice(tenantId: string, id: string) {
     return this.prisma.saaSInvoice.findUnique({
       where: { id, tenantId },
-      include: { items: true, transactions: true }
+      include: { items: true, transactions: true },
     });
   }
 
   async getUsage(tenantId: string) {
     return this.prisma.saaSSubscriptionUsage.findMany({
-      where: { tenantId }
+      where: { tenantId },
     });
   }
 }

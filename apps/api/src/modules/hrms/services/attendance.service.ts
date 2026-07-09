@@ -1,13 +1,13 @@
-import { Injectable } from '@nestjs/common';
-import { AttendanceRepository } from '../repositories/attendance.repository';
-import { ClockInDto, ClockOutDto } from '../dto/hrms.dto';
-import { PrismaService } from '../../../common/prisma/prisma.service';
+import { Injectable } from "@nestjs/common";
+import { AttendanceRepository } from "../repositories/attendance.repository";
+import { ClockInDto, ClockOutDto } from "../dto/hrms.dto";
+import { PrismaService } from "../../../common/prisma/prisma.service";
 
 @Injectable()
 export class AttendanceService {
   constructor(
     private readonly repository: AttendanceRepository,
-    private readonly prisma: PrismaService,
+    private readonly prisma: PrismaService
   ) {}
 
   async findAll(tenantId: string) {
@@ -21,10 +21,10 @@ export class AttendanceService {
       data: {
         tenantId,
         userId: actionUserId,
-        action: 'CREATE',
-        entityName: 'Attendance',
+        action: "CREATE",
+        entityName: "Attendance",
         entityId: attendance.id,
-        newValues: { action: 'CLOCK_IN' },
+        newValues: { action: "CLOCK_IN" },
       },
     });
 
@@ -38,10 +38,10 @@ export class AttendanceService {
       data: {
         tenantId,
         userId: actionUserId,
-        action: 'UPDATE',
-        entityName: 'Attendance',
+        action: "UPDATE",
+        entityName: "Attendance",
         entityId: attendance.id,
-        newValues: { action: 'CLOCK_OUT' },
+        newValues: { action: "CLOCK_OUT" },
       },
     });
 

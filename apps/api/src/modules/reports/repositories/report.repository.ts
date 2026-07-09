@@ -1,13 +1,17 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../common/prisma/prisma.service';
-import { Prisma, Report } from '@prisma/client';
-import { CreateReportDto, UpdateReportDto } from '../dto/report.dto';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../../../common/prisma/prisma.service";
+import { Prisma, Report } from "@prisma/client";
+import { CreateReportDto, UpdateReportDto } from "../dto/report.dto";
 
 @Injectable()
 export class ReportRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(tenantId: string, userId: string, dto: CreateReportDto): Promise<Report> {
+  async create(
+    tenantId: string,
+    userId: string,
+    dto: CreateReportDto
+  ): Promise<Report> {
     return this.prisma.report.create({
       data: {
         tenantId,
@@ -21,14 +25,17 @@ export class ReportRepository {
     });
   }
 
-  async findMany(tenantId: string, params: { skip?: number; take?: number; where?: Prisma.ReportWhereInput }): Promise<[Report[], number]> {
+  async findMany(
+    tenantId: string,
+    params: { skip?: number; take?: number; where?: Prisma.ReportWhereInput }
+  ): Promise<[Report[], number]> {
     const { skip, take, where } = params;
     return Promise.all([
       this.prisma.report.findMany({
         skip,
         take,
         where: { ...where, tenantId, deletedAt: null },
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
       }),
       this.prisma.report.count({
         where: { ...where, tenantId, deletedAt: null },
@@ -42,7 +49,12 @@ export class ReportRepository {
     });
   }
 
-  async update(tenantId: string, id: string, dto: UpdateReportDto, currentVersion: number): Promise<Report> {
+  async update(
+    tenantId: string,
+    id: string,
+    dto: UpdateReportDto,
+    currentVersion: number
+  ): Promise<Report> {
     return this.prisma.report.update({
       where: { id, tenantId, version: currentVersion },
       data: {
@@ -59,14 +71,21 @@ export class ReportRepository {
     });
   }
 
-  async createExecution(tenantId: string, data: Prisma.ReportExecutionCreateInput) {
+  async createExecution(
+    tenantId: string,
+    data: Prisma.ReportExecutionCreateInput
+  ) {
     return this.prisma.reportExecution.create({ data });
   }
 
-  async updateExecution(tenantId: string, id: string, data: Prisma.ReportExecutionUpdateInput) {
+  async updateExecution(
+    tenantId: string,
+    id: string,
+    data: Prisma.ReportExecutionUpdateInput
+  ) {
     return this.prisma.reportExecution.update({
       where: { id, tenantId },
-      data
+      data,
     });
   }
 }

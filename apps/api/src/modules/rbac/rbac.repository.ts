@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../common/prisma/prisma.service';
-import { CreateRoleDto, UpdateRoleDto } from './dto/role.dto';
-import { CreatePermissionDto, UpdatePermissionDto } from './dto/permission.dto';
-import { BaseException } from '../../common/exceptions/base.exception';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../../common/prisma/prisma.service";
+import { CreateRoleDto, UpdateRoleDto } from "./dto/role.dto";
+import { CreatePermissionDto, UpdatePermissionDto } from "./dto/permission.dto";
+import { BaseException } from "../../common/exceptions/base.exception";
 
 @Injectable()
 export class RbacRepository {
@@ -29,7 +29,11 @@ export class RbacRepository {
     });
 
     if (exists) {
-      throw new BaseException(`Role ${dto.name} already exists`, 'RBAC-409', 409);
+      throw new BaseException(
+        `Role ${dto.name} already exists`,
+        "RBAC-409",
+        409
+      );
     }
 
     return this.prisma.role.create({

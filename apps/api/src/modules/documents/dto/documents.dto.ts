@@ -1,16 +1,24 @@
-import { IsString, IsOptional, IsEnum, IsBoolean, IsUUID, IsNumber, IsArray } from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsString,
+  IsOptional,
+  IsEnum,
+  IsBoolean,
+  IsUUID,
+  IsNumber,
+  IsArray,
+} from "class-validator";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export enum DocumentStatus {
-  ACTIVE = 'ACTIVE',
-  QUARANTINED = 'QUARANTINED',
-  ARCHIVED = 'ARCHIVED'
+  ACTIVE = "ACTIVE",
+  QUARANTINED = "QUARANTINED",
+  ARCHIVED = "ARCHIVED",
 }
 
 export enum DocumentPermissionType {
-  READ = 'READ',
-  WRITE = 'WRITE',
-  ADMIN = 'ADMIN'
+  READ = "READ",
+  WRITE = "WRITE",
+  ADMIN = "ADMIN",
 }
 
 export class CreateFolderDto {

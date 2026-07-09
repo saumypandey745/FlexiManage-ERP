@@ -1,16 +1,16 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { DashboardService } from '../services/dashboard.service';
-import { DashboardRepository } from '../repositories/dashboard.repository';
+import { Test, TestingModule } from "@nestjs/testing";
+import { DashboardService } from "../services/dashboard.service";
+import { DashboardRepository } from "../repositories/dashboard.repository";
 
-describe('DashboardService', () => {
+describe("DashboardService", () => {
   let service: DashboardService;
 
   const mockRepo = {
-    create: jest.fn().mockResolvedValue({ id: 'dash-1', name: 'Test' }),
-    findById: jest.fn().mockResolvedValue({ id: 'dash-1', name: 'Test' }),
-    findMany: jest.fn().mockResolvedValue([[{ id: 'dash-1' }], 1]),
-    update: jest.fn().mockResolvedValue({ id: 'dash-1' }),
-    softDelete: jest.fn().mockResolvedValue({ id: 'dash-1' }),
+    create: jest.fn().mockResolvedValue({ id: "dash-1", name: "Test" }),
+    findById: jest.fn().mockResolvedValue({ id: "dash-1", name: "Test" }),
+    findMany: jest.fn().mockResolvedValue([[{ id: "dash-1" }], 1]),
+    update: jest.fn().mockResolvedValue({ id: "dash-1" }),
+    softDelete: jest.fn().mockResolvedValue({ id: "dash-1" }),
   };
 
   beforeEach(async () => {
@@ -24,13 +24,13 @@ describe('DashboardService', () => {
     service = module.get<DashboardService>(DashboardService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  it('should create a dashboard', async () => {
-    const dto = { name: 'Test' };
-    const res = await service.create('tenant-1', 'user-1', dto);
-    expect(res.id).toBe('dash-1');
+  it("should create a dashboard", async () => {
+    const dto = { name: "Test" };
+    const res = await service.create("tenant-1", "user-1", dto);
+    expect(res.id).toBe("dash-1");
   });
 });

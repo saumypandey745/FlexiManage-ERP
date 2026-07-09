@@ -1,6 +1,14 @@
-import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsOptional, IsEnum, IsNumber, IsUUID, IsDateString } from 'class-validator';
-import { WarehouseStatus, MovementType, POStatus } from '@prisma/client';
+import { ApiProperty, PartialType } from "@nestjs/swagger";
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsEnum,
+  IsNumber,
+  IsUUID,
+  IsDateString,
+} from "class-validator";
+import { WarehouseStatus, MovementType, POStatus } from "@prisma/client";
 
 export class CreateProductDto {
   @ApiProperty()

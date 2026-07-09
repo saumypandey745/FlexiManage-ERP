@@ -1,8 +1,12 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { BillingRepository } from '../repositories/billing.repository';
-import { CreatePaymentDto, CreateCouponDto } from '../dto/billing.dto';
-import Stripe from 'stripe';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { BillingRepository } from "../repositories/billing.repository";
+import { CreatePaymentDto, CreateCouponDto } from "../dto/billing.dto";
+import Stripe from "stripe";
 
 @Injectable()
 export class BillingService {
@@ -12,9 +16,9 @@ export class BillingService {
     private readonly repo: BillingRepository,
     private readonly configService: ConfigService
   ) {
-    const stripeKey = this.configService.get<string>('STRIPE_SECRET_KEY');
-    this.stripe = new Stripe(stripeKey || '', {
-      apiVersion: '2026-06-24.dahlia' as any,
+    const stripeKey = this.configService.get<string>("STRIPE_SECRET_KEY");
+    this.stripe = new Stripe(stripeKey || "", {
+      apiVersion: "2026-06-24.dahlia" as any,
     });
   }
 
@@ -24,19 +28,23 @@ export class BillingService {
 
   async getInvoice(tenantId: string, id: string) {
     const invoice = await this.repo.getInvoice(tenantId, id);
-    if (!invoice) throw new NotFoundException('Invoice not found');
+    if (!invoice) throw new NotFoundException("Invoice not found");
     return invoice;
   }
 
-  async processPayment(tenantId: string, userId: string, dto: CreatePaymentDto) {
+  async processPayment(
+    tenantId: string,
+    userId: string,
+    dto: CreatePaymentDto
+  ) {
     const invoice = await this.repo.getInvoice(tenantId, dto.invoiceId);
-    if (!invoice) throw new NotFoundException('Invoice not found');
+    if (!invoice) throw new NotFoundException("Invoice not found");
 
-    if (dto.provider === 'stripe') {
+    if (dto.provider === "stripe") {
       try {
         const paymentIntent = await this.stripe.paymentIntents.create({
           amount: Math.round(Number(invoice.amount) * 100), // convert to cents
-          currency: 'usd',
+          currency: "usd",
           metadata: {
             tenantId,
             invoiceId: dto.invoiceId,
@@ -44,14 +52,21 @@ export class BillingService {
           },
         });
 
-        await this.repo.logAudit(tenantId, userId, 'PAYMENT_INITIATED', { provider: dto.provider, invoiceId: dto.invoiceId });
-        return { success: true, clientSecret: paymentIntent.client_secret, transactionId: paymentIntent.id };
+        await this.repo.logAudit(tenantId, userId, "PAYMENT_INITIATED", {
+          provider: dto.provider,
+          invoiceId: dto.invoiceId,
+        });
+        return {
+          success: true,
+          clientSecret: paymentIntent.client_secret,
+          transactionId: paymentIntent.id,
+        };
       } catch (error) {
         throw new BadRequestException(`Stripe error: ${error.message}`);
       }
     }
-    
-    throw new BadRequestException('Unsupported payment provider');
+
+    throw new BadRequestException("Unsupported payment provider");
   }
 
   async getUsage(tenantId: string) {
@@ -63,9 +78,11 @@ export class BillingService {
       const couponDto: any = dto;
       const coupon = await this.stripe.coupons.create({
         percent_off: couponDto.percentOff,
-        amount_off: couponDto.amountOff ? Math.round(couponDto.amountOff * 100) : undefined,
-        currency: couponDto.amountOff ? 'usd' : undefined,
-        duration: 'once', // simplify for now
+        amount_off: couponDto.amountOff
+          ? Math.round(couponDto.amountOff * 100)
+          : undefined,
+        currency: couponDto.amountOff ? "usd" : undefined,
+        duration: "once", // simplify for now
         name: dto.code,
       });
 

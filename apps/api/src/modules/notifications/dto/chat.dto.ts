@@ -1,6 +1,13 @@
-import { IsString, IsOptional, IsEnum, IsUUID, IsBoolean, IsArray } from 'class-validator';
-import { MessageType, WebhookStatus } from '@prisma/client';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsString,
+  IsOptional,
+  IsEnum,
+  IsUUID,
+  IsBoolean,
+  IsArray,
+} from "class-validator";
+import { MessageType, WebhookStatus } from "@prisma/client";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class CreateChatRoomDto {
   @ApiPropertyOptional()
@@ -14,7 +21,7 @@ export class CreateChatRoomDto {
 
   @ApiProperty()
   @IsArray()
-  @IsUUID('4', { each: true })
+  @IsUUID("4", { each: true })
   participantIds: string[];
 }
 

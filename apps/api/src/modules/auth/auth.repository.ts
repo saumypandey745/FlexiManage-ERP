@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../common/prisma/prisma.service';
-import { RegisterTenantDto } from './dto/register.dto';
-import * as argon2 from 'argon2';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../../common/prisma/prisma.service";
+import { RegisterTenantDto } from "./dto/register.dto";
+import * as argon2 from "argon2";
 
 @Injectable()
 export class AuthRepository {
@@ -26,20 +26,20 @@ export class AuthRepository {
 
   async createTenantWithAdmin(dto: RegisterTenantDto) {
     const hashedPassword = await argon2.hash(dto.password);
-    
+
     return this.prisma.$transaction(async (tx) => {
       // 1. Create Tenant
       const tenant = await tx.tenant.create({
         data: {
           name: dto.companyName,
-          status: 'ACTIVE',
+          status: "ACTIVE",
         },
       });
 
       // 2. Create Global Admin Role for Tenant
       const adminRole = await tx.role.create({
         data: {
-          name: 'SuperAdmin',
+          name: "SuperAdmin",
           tenantId: tenant.id,
         },
       });
@@ -50,7 +50,7 @@ export class AuthRepository {
           email: dto.email,
           passwordHash: hashedPassword,
           tenantId: tenant.id,
-          status: 'ACTIVE',
+          status: "ACTIVE",
           roles: {
             create: {
               roleId: adminRole.id,
@@ -64,10 +64,10 @@ export class AuthRepository {
         data: {
           tenantId: tenant.id,
           userId: user.id,
-          employeeCode: 'EMP-0001',
+          employeeCode: "EMP-0001",
           firstName: dto.firstName,
           lastName: dto.lastName,
-          status: 'CONFIRMED',
+          status: "CONFIRMED",
         },
       });
 
@@ -83,12 +83,12 @@ export class AuthRepository {
   }
 
   async markEmailAsVerified(userId: string) {
-    // We didn't define emailVerifiedAt in Phase 06C Prisma Schema, 
+    // We didn't define emailVerifiedAt in Phase 06C Prisma Schema,
     // but typically you would update a timestamp or status here.
     // Assuming status transitions from PENDING -> ACTIVE (though in our MVP they start ACTIVE).
     return this.prisma.user.update({
       where: { id: userId },
-      data: { status: 'ACTIVE' },
+      data: { status: "ACTIVE" },
     });
   }
 }

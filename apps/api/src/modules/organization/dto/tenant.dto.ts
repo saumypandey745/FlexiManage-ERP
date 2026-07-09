@@ -1,9 +1,9 @@
-import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
-import { TenantStatus, SubscriptionPlan } from '@prisma/client';
+import { ApiProperty, PartialType } from "@nestjs/swagger";
+import { IsEnum, IsNotEmpty, IsString } from "class-validator";
+import { TenantStatus, SubscriptionPlan } from "@prisma/client";
 
 export class CreateTenantDto {
-  @ApiProperty({ example: 'Acme Corp' })
+  @ApiProperty({ example: "Acme Corp" })
   @IsString()
   @IsNotEmpty()
   name!: string;
@@ -16,11 +16,11 @@ export class CreateTenantDto {
   @IsEnum(SubscriptionPlan)
   subscription?: SubscriptionPlan;
 
-  @ApiProperty({ example: 'UTC' })
+  @ApiProperty({ example: "UTC" })
   @IsString()
   timezone?: string;
 
-  @ApiProperty({ example: 'USD' })
+  @ApiProperty({ example: "USD" })
   @IsString()
   currency?: string;
 }

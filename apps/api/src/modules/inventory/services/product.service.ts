@@ -1,14 +1,14 @@
-import { Injectable } from '@nestjs/common';
-import { ProductRepository } from '../repositories/product.repository';
-import { CreateProductDto, UpdateProductDto } from '../dto/inventory.dto';
-import { BaseException } from '../../../common/exceptions/base.exception';
-import { PrismaService } from '../../../common/prisma/prisma.service';
+import { Injectable } from "@nestjs/common";
+import { ProductRepository } from "../repositories/product.repository";
+import { CreateProductDto, UpdateProductDto } from "../dto/inventory.dto";
+import { BaseException } from "../../../common/exceptions/base.exception";
+import { PrismaService } from "../../../common/prisma/prisma.service";
 
 @Injectable()
 export class ProductService {
   constructor(
     private readonly repository: ProductRepository,
-    private readonly prisma: PrismaService,
+    private readonly prisma: PrismaService
   ) {}
 
   async findAll(tenantId: string) {
@@ -18,7 +18,7 @@ export class ProductService {
   async findOne(tenantId: string, id: string) {
     const product = await this.repository.findById(tenantId, id);
     if (!product) {
-      throw new BaseException('Product not found', 'INV-PROD-404', 404);
+      throw new BaseException("Product not found", "INV-PROD-404", 404);
     }
     return product;
   }
@@ -30,8 +30,8 @@ export class ProductService {
       data: {
         tenantId,
         userId: actionUserId,
-        action: 'CREATE',
-        entityName: 'Product',
+        action: "CREATE",
+        entityName: "Product",
         entityId: product.id,
         newValues: { sku: dto.sku },
       },
@@ -40,17 +40,22 @@ export class ProductService {
     return product;
   }
 
-  async update(tenantId: string, id: string, actionUserId: string, dto: UpdateProductDto) {
+  async update(
+    tenantId: string,
+    id: string,
+    actionUserId: string,
+    dto: UpdateProductDto
+  ) {
     await this.findOne(tenantId, id); // Ensure exists
-    
+
     const product = await this.repository.updateProduct(tenantId, id, dto);
 
     await this.prisma.auditLog.create({
       data: {
         tenantId,
         userId: actionUserId,
-        action: 'UPDATE',
-        entityName: 'Product',
+        action: "UPDATE",
+        entityName: "Product",
         entityId: product.id,
         newValues: dto as any,
       },
@@ -61,15 +66,15 @@ export class ProductService {
 
   async delete(tenantId: string, id: string, actionUserId: string) {
     await this.findOne(tenantId, id);
-    
+
     await this.repository.deleteProduct(tenantId, id);
 
     await this.prisma.auditLog.create({
       data: {
         tenantId,
         userId: actionUserId,
-        action: 'DELETE',
-        entityName: 'Product',
+        action: "DELETE",
+        entityName: "Product",
         entityId: id,
         newValues: { deleted: true },
       },

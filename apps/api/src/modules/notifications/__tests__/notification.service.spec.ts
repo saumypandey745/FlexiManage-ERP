@@ -1,25 +1,25 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { NotificationService } from '../services/notification.service';
-import { NotificationRepository } from '../repositories/notification.repository';
-import { PrismaService } from '../../../common/prisma/prisma.service';
-import { NotificationType, NotificationChannel } from '../dto/notification.dto';
+import { Test, TestingModule } from "@nestjs/testing";
+import { NotificationService } from "../services/notification.service";
+import { NotificationRepository } from "../repositories/notification.repository";
+import { PrismaService } from "../../../common/prisma/prisma.service";
+import { NotificationType, NotificationChannel } from "../dto/notification.dto";
 
-describe('NotificationService', () => {
+describe("NotificationService", () => {
   let service: NotificationService;
 
   const mockRepo = {
-    create: jest.fn().mockResolvedValue({ id: 'notif-1', title: 'Test' }),
-    findById: jest.fn().mockResolvedValue({ id: 'notif-1', title: 'Test' }),
-    findMany: jest.fn().mockResolvedValue([[{ id: 'notif-1' }], 1]),
-    update: jest.fn().mockResolvedValue({ id: 'notif-1' }),
-    softDelete: jest.fn().mockResolvedValue({ id: 'notif-1' }),
+    create: jest.fn().mockResolvedValue({ id: "notif-1", title: "Test" }),
+    findById: jest.fn().mockResolvedValue({ id: "notif-1", title: "Test" }),
+    findMany: jest.fn().mockResolvedValue([[{ id: "notif-1" }], 1]),
+    update: jest.fn().mockResolvedValue({ id: "notif-1" }),
+    softDelete: jest.fn().mockResolvedValue({ id: "notif-1" }),
   };
 
   const mockPrisma = {
     notificationRecipient: {
-      findFirst: jest.fn().mockResolvedValue({ id: 'rec-1' }),
-      update: jest.fn().mockResolvedValue({ id: 'rec-1', isRead: true }),
-    }
+      findFirst: jest.fn().mockResolvedValue({ id: "rec-1" }),
+      update: jest.fn().mockResolvedValue({ id: "rec-1", isRead: true }),
+    },
   };
 
   beforeEach(async () => {
@@ -34,20 +34,20 @@ describe('NotificationService', () => {
     service = module.get<NotificationService>(NotificationService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  it('should create a notification', async () => {
+  it("should create a notification", async () => {
     const dto = {
       type: NotificationType.SYSTEM,
-      title: 'Test',
-      body: 'Body',
-      recipientIds: ['user-1'],
-      channels: [NotificationChannel.IN_APP]
+      title: "Test",
+      body: "Body",
+      recipientIds: ["user-1"],
+      channels: [NotificationChannel.IN_APP],
     };
-    const res = await service.create('tenant-1', 'sender-1', dto);
-    expect(res.id).toBe('notif-1');
+    const res = await service.create("tenant-1", "sender-1", dto);
+    expect(res.id).toBe("notif-1");
     expect(mockRepo.create).toHaveBeenCalled();
   });
 });

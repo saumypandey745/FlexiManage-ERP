@@ -1,6 +1,23 @@
-import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsOptional, IsEnum, IsNumber, IsUUID, IsDateString, IsBoolean, ValidateNested } from 'class-validator';
-import { EmployeeStatus, AttendanceStatus, LeaveStatus, PayrollStatus, CandidateStatus, ShiftType } from '@prisma/client';
+import { ApiProperty, PartialType } from "@nestjs/swagger";
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsEnum,
+  IsNumber,
+  IsUUID,
+  IsDateString,
+  IsBoolean,
+  ValidateNested,
+} from "class-validator";
+import {
+  EmployeeStatus,
+  AttendanceStatus,
+  LeaveStatus,
+  PayrollStatus,
+  CandidateStatus,
+  ShiftType,
+} from "@prisma/client";
 
 export class CreateEmployeeDto {
   @ApiProperty()

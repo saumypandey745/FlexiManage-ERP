@@ -1,12 +1,12 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { IStorageProvider } from '../interfaces/storage-provider.interface';
-import * as fs from 'fs';
-import * as path from 'path';
-import { v4 as uuidv4 } from 'uuid';
+import { Injectable, Logger } from "@nestjs/common";
+import { IStorageProvider } from "../interfaces/storage-provider.interface";
+import * as fs from "fs";
+import * as path from "path";
+import { v4 as uuidv4 } from "uuid";
 
 @Injectable()
 export class LocalStorageProvider implements IStorageProvider {
-  private readonly storagePath = path.join(process.cwd(), 'uploads');
+  private readonly storagePath = path.join(process.cwd(), "uploads");
   private readonly logger = new Logger(LocalStorageProvider.name);
 
   constructor() {
@@ -15,7 +15,11 @@ export class LocalStorageProvider implements IStorageProvider {
     }
   }
 
-  async uploadFile(key: string, buffer: Buffer, mimeType: string): Promise<string> {
+  async uploadFile(
+    key: string,
+    buffer: Buffer,
+    mimeType: string
+  ): Promise<string> {
     const filePath = path.join(this.storagePath, key);
     // Ensure directory exists for nested keys
     const dir = path.dirname(filePath);
@@ -40,7 +44,7 @@ export class LocalStorageProvider implements IStorageProvider {
     return false;
   }
 
-  async getSignedUrl(key: string, expiresIn: number = 3600): Promise<string> {
+  async getSignedUrl(key: string, expiresIn = 3600): Promise<string> {
     // Mock signed URL generation for local storage
     return `/local-storage/${key}?expires=${Date.now() + expiresIn * 1000}`;
   }
