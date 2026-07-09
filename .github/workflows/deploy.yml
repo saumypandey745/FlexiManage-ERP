@@ -38,7 +38,7 @@ jobs:
         run: npm install -g @railway/cli
 
       - name: Deploy to Railway
-        run: railway up --service fleximanage-api --detach
+        run: railway up --project f6cfc991-f769-4af1-9b52-9eb8c7312760 --service fleximanage-api --detach
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
 
@@ -57,6 +57,12 @@ jobs:
 
       - name: Install Dependencies
         run: npm install
+        working-directory: apps/web
+
+      - name: Link Vercel Project
+        run: |
+          mkdir -p .vercel
+          echo '{"projectId":"prj_bYMUapC71Jb8cixSR96xkTr4H7yu","orgId":"team_tcLkxLAl7IeyZRASP4dMskur"}' > .vercel/project.json
         working-directory: apps/web
 
       - name: Deploy to Vercel
