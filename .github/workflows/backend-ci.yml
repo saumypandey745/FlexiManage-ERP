@@ -13,6 +13,8 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: "postgresql://admin:admin_password@localhost:5432/fleximanage_test"
     defaults:
       run:
         working-directory: apps/api
