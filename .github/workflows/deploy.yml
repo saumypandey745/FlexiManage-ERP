@@ -38,7 +38,7 @@ jobs:
         run: npm install -g @railway/cli
 
       - name: Deploy to Railway
-        run: railway up --project f6cfc991-f769-4af1-9b52-9eb8c7312760 --service fleximanage-api --detach
+        run: railway up --project f6cfc991-f769-4af1-9b52-9eb8c7312760 --environment production --service fleximanage-api --detach
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
 
