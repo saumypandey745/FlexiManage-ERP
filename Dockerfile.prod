@@ -2,16 +2,15 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Install root + API dependencies in proper monorepo structure
+# Copy monorepo manifests
 COPY package*.json ./
 COPY turbo.json ./
 COPY apps/api/package*.json ./apps/api/
 
-# Full install with postinstall scripts enabled
+# Install ALL dependencies at root level (hoisted for workspace)
 RUN npm install
-RUN cd apps/api && npm install
 
-# Copy source and build
+# Copy API source
 COPY apps/api ./apps/api
 
 # Generate Prisma client and build
@@ -24,11 +23,17 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# Copy ONLY the api dir with its own fully installed node_modules
-COPY --from=builder /app/apps/api/node_modules ./apps/api/node_modules
+# CRITICAL: Copy ROOT node_modules (hoisted workspace deps: nestjs, etc.)
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+
+# Copy API artifacts
 COPY --from=builder /app/apps/api/dist ./apps/api/dist
 COPY --from=builder /app/apps/api/prisma ./apps/api/prisma
 COPY --from=builder /app/apps/api/package.json ./apps/api/package.json
+
+# Also copy any api-specific node_modules (Prisma client, argon2, etc.)
+COPY --from=builder /app/apps/api/node_modules ./apps/api/node_modules
 
 EXPOSE 3000
 
